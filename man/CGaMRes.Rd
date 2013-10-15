@@ -28,7 +28,7 @@ thinning = TRUE, thpar = 3, printtime = TRUE)
   \item{burn.in}{Integer. Length of the burn-in period for the Markov chain.}
   \item{thinning}{Logical. \code{TRUE} thins the Markov chain to reduce autocorrelation.}
   \item{thpar}{Integer. Factor by which the chain will be thinned if \code{thinning}=\code{TRUE}.}
-  \item{printtime}{If \code{TRUE}, prints out the execution time.}
+  \item{printtime}{Logical. If \code{TRUE}, prints out the execution time.}
 }
 
 \details{Computes the Gibbs sampler given by the full conditional distributions of h, lambda and theta (Nieto-Barajas, 2003), and arranges the resulting Markov chain into a matrix which can be useful to obtain posterior summaries.
@@ -53,10 +53,6 @@ thinning = TRUE, thpar = 3, printtime = TRUE)
 1. Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
 
 2. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM)
-}
-
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
 }
 
 \note{

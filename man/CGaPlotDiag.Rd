@@ -27,10 +27,6 @@ CGaPlotDiag(M, variable = "lambda", pos = 1)
 2. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM)
 }
 
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
-}
-
 \seealso{\link{CGaMRes}}
 
 \examples{ 
@@ -42,5 +38,4 @@ Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
 ## EX <- GaMRes(times, delta)
 ## GaPlotDiag(EX, variable = "lambda", pos = 2)
 ## GaPlotDiag(EX, variable = "u", pos = 3)
-## GaPlotDiag(EX, variable = "epsilon", pos = 1)
 }

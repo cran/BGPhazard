@@ -26,10 +26,6 @@ This function returns a diagnosis plot for the chain of the selected variable. T
 Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
 }
 
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
-}
-
 \seealso{\link{BeMRes}}
 
 \examples{
@@ -41,5 +37,4 @@ Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
 ## EX <- BeMRes(times, delta)
 ## BePlotDiag(EX, variable = "Pi", pos = 2)
 ## BePlotDiag(EX, variable = "u", pos = 3)
-## BePlotDiag(EX, variable = "epsilon", pos = 1)
 }

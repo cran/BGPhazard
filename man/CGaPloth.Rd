@@ -39,10 +39,6 @@ This function return plots for the resulting hazard rate as it is computed by \c
 2. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM)
 }
 
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
-}
-
 \section{Warning}{The argument \code{fun} is case-sensitive and requires quotations as its class is character.}
 
 \seealso{

@@ -37,10 +37,6 @@ This function return plots for the resulting hazard rate as it is computed by \c
 Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
 }
 
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
-}
-
 \section{Warning}{The argument \code{fun} is case-sensitive and requires quotations as its class is character.}
 
 \seealso{
