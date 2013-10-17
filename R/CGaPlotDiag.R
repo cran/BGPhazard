@@ -67,4 +67,4 @@ function(M, variable = "lambda", pos = 1) {
   mtext("Histogram", line = 1, ps = 2, cex = 1, font = 1)
   par(mfrow = c(1, 1))
   mtext(paste(variable, "_", pos), line = 2.5, ps = 2, cex = 1.25, font = 2)
-  }
+}

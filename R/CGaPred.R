@@ -1,28 +1,22 @@
-CoxGammaSummary <-
-function(M, s = 1, i = 1, confidence = 0.95, xf = "median") {
+CGaPred <-
+function(M, xf = "median", confidence = 0.95) {
   K <- M$K
   p <- M$p
+  tao <- M$tao
   covar <- M$covar
   MS <- M$summary
-  iterations <- M$iterations
   prob <- (1 - confidence) / 2
   SUM <- CLambdaSumm(M, confidence)
+  SUM.h <- SUM$SUM.h
   h.0 <- SUM$SUM.h[, 2]
   S.0 <- SUM$SUM.S[, 2]
   H.0 <- SUM$SUM.H[, 2]
   b <- 0
   theta.summary <- matrix(0, ncol = 5, nrow = p)
-  if(iterations == 3 * K - 1 + p){
+  b <- 0
+  if(length(MS[, 1]) == 3 * K - 1 + p){
     b <- 1
   }
-  X <- MS[3 * K - 2 + b + s, ]
-  hist(X, prob=TRUE, main = paste("Histogram and density for theta_", s, 
-                                  sep = ""), 
-       xlab = paste("theta_", s, sep = ""), col = "skyblue")
-  lines(density(X), lwd=2)
-  legend(x = "topright", legend = c("Histogram", "Density"), lty = c(0, 0), 
-         col = c("skyblue", "white"), bty = "n", cex = 0.8, 
-         fill = c("skyblue", 1))
   for(i in 1:p) {
     theta.summary[i, 1] <- mean(MS[3 * K - 2 + b + i, ])
     theta.summary[i, 2] <- quantile(MS[3 * K - 2 + b + i, ], probs = prob)
@@ -32,18 +26,25 @@ function(M, s = 1, i = 1, confidence = 0.95, xf = "median") {
   }
   colnames(theta.summary) <- c("mean", prob, 1- prob, "median", "sd")
   theta <- theta.summary[, 1]
-  x.i <- covar[i ,]
-  if (xf == "median") {
-    xf <- 0
+  if (class(xf) == "character") {
+    xf <- rep(0, p)
     for (i in 1:p) {
       xf[i] <- median(covar[, i])  
     }
   }
-  h.i <- h.0 * exp(theta %*% x.i)
-  S.i <- exp(- H.0 * exp(theta %*% x.i))
   h.xf <- h.0 * exp(theta %*% xf)
   S.xf <- exp(- H.0 * exp(theta %*% xf))
-  out <- list(theta.summary = theta.summary, h.i = h.i, S.i = S.i, h.xf = h.xf, 
-              S.xf = S.xf)
+  plot(c(0, max(tao)), c(0, max(h.xf)), "n", xlab = "times", ylab = "", 
+       main = "Hazard distribution estimate")
+  for(i in 1:K) {
+    segments(x0 = tao[i], y0 = SUM.h[i, 2], x1 = tao[i + 1], 
+             y1 = SUM.h[i, 2], lty = 1, lwd = 2.5)
+    segments(x0 = tao[i], y0 = h.xf[i], x1 = tao[i + 1], 
+             y1 = h.xf[i], lty = 1, lwd = 2.5, col="red")
+  }
+  legend("bottomright", c("Baseline hazard", "Estimate for x_f"), 
+         lty = c(1, 1), lwd = c(2.5, 2.5), col = c(1, "red"), bty = "n",
+         cex = 0.8)
+  out <- list(theta.summary = theta.summary, h.xf = h.xf, S.xf = S.xf)
   return(out)
 }

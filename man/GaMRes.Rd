@@ -29,7 +29,7 @@ burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
   \item{burn.in}{Integer. Length of the burn-in period for the Markov chain.}
   \item{thinning}{Logical. \code{TRUE} thins the Markov chain to reduce autocorrelation.}
   \item{thpar}{Integer. Factor by which the chain will be thinned if \code{thinning}=\code{TRUE}.}
-  \item{printtime}{If \code{TRUE}, prints out the execution time.}
+  \item{printtime}{Logical. If \code{TRUE}, prints out the execution time.}
 }
 
 \details{Computes the Gibbs sampler given by the full conditional distributions of u and lambda (Nieto-Barajas & Walker, 2002), and arranges the resulting Markov chain into a matrix which can be useful to obtain posterior summaries.
@@ -51,10 +51,6 @@ burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
 Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
 }
 
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
-}
-
 \note{
 It is recommended to verify chain's stationarity. This can be done by checking each partition element individually. See \code{\link{GaPlotDiag}}.
 }
@@ -69,6 +65,6 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 ## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
 ## times <- data1[, 1]; delta <- data1[, 2]
 ## EX <- GaMRes(times, delta)
-## EX <- GaMRes(times, delta, type.t = 2, type.c = 2, alpha = rep(0.0001, 35),
-## beta=rep(0.0001, 35), c.r = rep(10, 34))
+## EX <- GaMRes(times, delta, type.t = 2, type.c = 2, K=35,
+## alpha = rep(0.0001, 35), beta=rep(0.0001, 35), c.r = rep(10, 34))
 }

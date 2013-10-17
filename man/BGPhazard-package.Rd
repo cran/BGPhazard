@@ -6,29 +6,25 @@
 
 \docType{package}
 
-\title{
-Markov beta, gamma processes for modelling hazard rates
-}
+\title{Markov beta and gamma processes for modelling hazard rates}
 
-\description{
-Computes the hazard rate estimate as described by Nieto-Barajas, L.E. & Walker, S.G. (2002) and by Nieto (2003).
-}
+\description{Computes the hazard rate estimate as described by Nieto-Barajas, L. E. & Walker, S. G. (2002) and Nieto (2003).}
 
 \details{
   \tabular{ll}{
     Package: \tab BGPhazard\cr
     Type: \tab Package\cr
-    Version: \tab 0.9.0\cr
-    Date: \tab 2013-10-01\cr
+    Version: \tab 0.9.1\cr
+    Date: \tab 2013-10-15\cr
     License: \tab GLP-2\cr
   }
-Tests. Preview.
+
 }
 
 \author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
+Garcia Bueno, J. A. & Nieto-Barajas, L. E.
 
-Maintainer: Garcia-Bueno, J.A. <joseagbueno@gmail.com>
+Maintainer: Jose Antonio Garcia Bueno <joseagbueno@gmail.com>
 }
 
 \references{
@@ -40,9 +36,11 @@ Maintainer: Garcia-Bueno, J.A. <joseagbueno@gmail.com>
 \keyword{ package }
 
 \examples{
-require(MASS)
-data1 <- gehan[gehan[,4] == "6-MP", 2:3]
-times <- data1[, 1]; delta <- data1[, 2]
-EX <- GaMRes(times, delta)
-BePloth(EX, confint = FALSE)
+## Examples are computing intensive. Be patient.
+## require(KMsurv)
+## data(psych)
+## times <- psych[, 3]
+## delta <- psych[, 4]
+## EX <- BeMRes(times, delta)
+## GaPloth(EX, confint = FALSE)
 }

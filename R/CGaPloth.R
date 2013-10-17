@@ -22,7 +22,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
       d <- 3
     }
     plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d])), "n", xlab = "time", 
-         ylab = "Hazard rate", main = "Estimate of hazard rates")
+         ylab = "Hazard rate", main = "Baseline hazard estimate")
     if (h.NA == TRUE) {
       points(x = fit$time, y = h.est, pch = "+", col = "slateblue4")
     }
@@ -38,23 +38,23 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
     }
     if (legend == TRUE) {
       if (confint == FALSE && h.NA == FALSE) {
-        legend("topleft", c("Hazard function"), lty = 1, lwd = 2, col = 1, 
+        legend("topleft", c("Baseline hazard"), lty = 1, lwd = 2, col = 1, 
                bty = "n", cex = 0.8)
       }
       if (confint == TRUE && h.NA == FALSE) {
-        legend("topleft", c("Hazard function", paste("Confidence band (", 
+        legend("topleft", c("Baseline hazard", paste("Confidence band (", 
                                                      confidence * 100, "%)",
                                                      sep="")), lty = c(1, 2), 
                lwd = c(2, 1), col = c(1, "darkred"), bty = "n", cex = 0.8)
       }
       if (confint == FALSE && h.NA == TRUE) {
-        legend("topleft", c("Hazard function", "Nelson-Aalen based estimate"), 
+        legend("topleft", c("Baseline hazard", "Nelson-Aalen based estimate"), 
                lty = c(1, 0), lwd = c(2, 1), col = c(1, "slateblue4"), 
                bty = "n", cex = 0.8, pch=c("","+"))
       }
       if (confint == TRUE && h.NA == TRUE) {
         legend("topleft", 
-               c("Hazard function", paste("Confidence band (", confidence * 100,
+               c("Baseline hazard", paste("Confidence band (", confidence * 100,
                                           "%)",sep=""),
                  "Nelson-Aalen based estimate"), lty = c(1, 2, 0),
                lwd = c(2, 1, 1), col = c(1, "darkred", "slateblue4"),
@@ -83,7 +83,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
     if (KM == TRUE) {
       if (confint == TRUE) {
         plot(fit, xlab = "times", ylab = "", 
-             main = "Estimate of Survival Function", col = "slateblue4")
+             main = "Baseline survival function", col = "slateblue4")
         lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
         lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "l", lty = 2, lwd = 2, 
               col = "darkred")
@@ -92,7 +92,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
       }
       if (confint == FALSE) {
         plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", ylab = "", 
-             main = "Estimate of Survival Function")
+             main = "Baseline survival function")
         lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
         lines(fit, type = "s", xlab = "times", ylab = "", lty = 2, lwd = 1, 
               col = "slateblue4")
@@ -121,9 +121,9 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
       }
       if ((fun == "S" || fun == "both") && KM == FALSE && confint == TRUE) {
         legend(x = "bottomleft", c("Model estimate", 
-                                  paste("Confidence bound (", 
-                                        confidence * 100, 
-                                        "%)", sep = "")), lty = c(1, 2), 
+                                   paste("Confidence bound (", 
+                                         confidence * 100, 
+                                         "%)", sep = "")), lty = c(1, 2), 
                col = c(1, "red"), bty = "n", lwd = c(2, 2), cex = 0.8)
       }
     }

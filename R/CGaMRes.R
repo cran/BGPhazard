@@ -203,7 +203,7 @@ function(data, type.t = 1, K = 5, alpha = rep(0.001, K.aux),
     print(procTime <- proc.time() - tInit)
   }
   out <- list(times = times, delta = delta, covar = covar, type.t = type.t, 
-              tao = tao, K = K, t.unc = t.unc, iterations = iterations, summary = X,
-              S = S, H = H, p = p)
+              tao = tao, K = K, t.unc = t.unc, iterations = iterations, 
+              summary = X, S = S, H = H, p = p)
   return(out)
-  }
+}

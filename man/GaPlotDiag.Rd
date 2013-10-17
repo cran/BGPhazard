@@ -25,10 +25,6 @@ GaPlotDiag(M, variable = "lambda", pos = 1)
 Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
 }
 
-\author{
-Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
-}
-
 \seealso{\link{GaMRes}}
 
 \examples{ 
@@ -39,5 +35,4 @@ Garcia-Bueno, J.A. & Nieto-Barajas, L.E.
 ## EX <- GaMRes(times, delta)
 ## GaPlotDiag(EX, variable = "lambda", pos = 2)
 ## GaPlotDiag(EX, variable = "u", pos = 3)
-## GaPlotDiag(EX, variable = "epsilon", pos = 1)
 }
