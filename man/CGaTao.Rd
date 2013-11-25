@@ -1,7 +1,7 @@
 \name{CGaTao}
 \alias{CGaTao}
 \title{tao partition}
-\description{Creates a partition for the time axis.}
+\description{Creates a partition of the time axis.}
 \usage{CGaTao(times, delta, type.t, K)}
 \references{
 1. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM).

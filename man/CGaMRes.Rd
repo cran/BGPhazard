@@ -5,7 +5,7 @@
 \title{Markov Gamma Model with Time Dependent Covariates Summary}
 
 \description{
-Summary for the full Bayesian non-parametric Markov gamma with time dependent covariates survival analysis.
+Summary of the full Bayesian non-parametric Markov gamma with time dependent covariates survival analysis.
 }
 
 \usage{
@@ -16,7 +16,7 @@ thinning = TRUE, thpar = 3, printtime = TRUE)
 }
 
 \arguments{
-  \item{data}{Numeric matrix. Contains failure times in the first column; status indicator on the second, and from the third to the last column, the varying covariate(s).}
+  \item{data}{Numeric matrix. Contains failure times in the first column, status indicator in the second, and, from the third to the last column, the varying covariate(s).}
   \item{type.t}{Integer. 1=computes same length intervals; 2=unitary length intervals and 3=uniformly-dense intervals.}
   \item{K}{Integer. Partition length for the hazard function if \code{type.t}=1 or \code{type.t}=3.} 
   \item{alpha}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
@@ -24,14 +24,14 @@ thinning = TRUE, thpar = 3, printtime = TRUE)
   \item{c.r}{Correlation vector. Its entries must be nonnegative integers.}
   \item{type.c}{1=defines \code{c.r} as a zero-entry vector; 2=lets the user define \code{c.r} feeely; 3=defines \code{c.r} by computing an exponential distribution with mean 1; 4=defines \code{c.r} by computing an exponential distribution with mean \code{epsilon}.}
   \item{epsilon}{Double. Mean of the exponential distribution assigned to \code{c.r} when \code{type.c}=4.}
-  \item{iterations}{Integer. Number of iterations incluiding the \code{burn.in} to be computed by the model.}
+  \item{iterations}{Integer. Number of iterations including the \code{burn.in} to be computed by the model.}
   \item{burn.in}{Integer. Length of the burn-in period for the Markov chain.}
   \item{thinning}{Logical. \code{TRUE} thins the Markov chain to reduce autocorrelation.}
   \item{thpar}{Integer. Factor by which the chain will be thinned if \code{thinning}=\code{TRUE}.}
   \item{printtime}{Logical. If \code{TRUE}, prints out the execution time.}
 }
 
-\details{Computes the Gibbs sampler given by the full conditional distributions of h, lambda and theta (Nieto-Barajas, 2003), and arranges the resulting Markov chain into a matrix which can be useful to obtain posterior summaries.
+\details{Computes the Gibbs sampler given by the full conditional distributions of h, lambda and theta (Nieto-Barajas, 2003) and arranges the resulting Markov chain into a matrix which can be used to obtain posterior summaries.
 }
 
 \value{
@@ -64,10 +64,9 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 }
 
 \examples{
-## Examples are be computing intensive. Be patient.
-## require(MASS)
-## data1 <- cbind(gehan[, 2], gehan[, 3], gehan[, 4] == "control")
-## EX <- GaMRes(data1)
-## EX <- GaMRes(data1, type.t = 2, type.c = 2, alpha = rep(0.0001, 35),
-## beta=rep(0.0001, 35), c.r = rep(10, 34))
+## Computing examples is time intensive. Be patient.
+## leukemia1 <- read.table("http://allman.rhon.itam.mx/~lnieto/index_archivos/Leucemia.txt",
+## header = TRUE)
+## leukemia1 <- as.matrix(cbind(leukemia1[, 1:3], log(leukemia1[, 4])))
+## EX <- CGaMRes(data = leukemia1, K = 10, iterations = 3000)
 }

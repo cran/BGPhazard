@@ -1,7 +1,7 @@
 \name{BeNM}
 \alias{BeNM}
 \title{n and m vectors for the beta process}
-\description{Computes n and m vectors as described by Nieto and Walker (2002).}
+\description{Computes n and m vectors as described by Nieto-Barajas and Walker (2002).}
 \usage{BeNM(times, delta)}
 \references{Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.}
 \value{

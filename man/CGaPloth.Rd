@@ -5,7 +5,7 @@
 \title{Plots for the Hazard and Survival Function Estimates}
 
 \description{
-Plots the resulting hazard function along with the survival function estimate defined by the Markov gamma process with time dependent covariates (Nieto, 2003).
+Plots the resulting hazard function along with the survival function estimate defined by the Markov gamma process with time dependent covariates (Nieto-Barajas, 2003).
 }
 
 \usage{
@@ -39,18 +39,18 @@ This function return plots for the resulting hazard rate as it is computed by \c
 2. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM)
 }
 
-\section{Warning}{The argument \code{fun} is case-sensitive and requires quotations as its class is character.}
+\section{Warning}{The argument \code{fun} is case-sensitive and requires quotations as its \code{class} is character.}
 
 \seealso{
 \link{CGaMRes}, \link{CGaPlotDiag}
 }
 
 \examples{
-## Examples are be computing intensive. Be patient.
+## Computing examples is time intensive. Be patient.
 ## require(MASS)
 ## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
 ## times <- data1[, 1]; delta <- data1[, 2]
 ## EX <- GaMRes(times, delta)
-## GaPloth(EX, confint = FALSE)
-## GaPloth(EX, fun = "both", confint = TRUE)
+## CGaPloth(EX, confint = FALSE)
+## CGaPloth(EX, fun = "both", confint = TRUE)
 }

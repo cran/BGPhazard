@@ -1,7 +1,7 @@
 \name{CUpdTheta}
 \alias{CUpdTheta}
 \title{theta update}
-\description{Updates regression coefficiets at iteration r.}
+\description{Updates regression coefficients at iteration r.}
 \usage{CUpdTheta(theta, lambda.r, times, delta, type.t, K, covar)}
 \references{
 1. Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.

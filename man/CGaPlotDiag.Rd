@@ -30,12 +30,11 @@ CGaPlotDiag(M, variable = "lambda", pos = 1)
 \seealso{\link{CGaMRes}}
 
 \examples{ 
-## Examples are be computing intensive. Be patient.
-## ACTUALIZAR
-## require(MASS)
-## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
-## times <- data1[, 1]; delta <- data1[, 2]
-## EX <- GaMRes(times, delta)
-## GaPlotDiag(EX, variable = "lambda", pos = 2)
-## GaPlotDiag(EX, variable = "u", pos = 3)
+## Computing examples is time intensive. Be patient.
+## leukemia1 <- read.table("http://allman.rhon.itam.mx/~lnieto/index_archivos/Leucemia.txt",
+## header = TRUE)
+## leukemia1 <- as.matrix(cbind(leukemia1[, 1:3], log(leukemia1[, 4])))
+## EX <- CGaMRes(data = leukemia1, K = 10, iterations = 3000)
+## CGaPlotDiag(EX, variable = "lambda", pos = 2)
+## CGaPlotDiag(EX, variable = "u", pos = 3)
 }
