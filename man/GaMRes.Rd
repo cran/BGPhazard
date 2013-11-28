@@ -5,12 +5,12 @@
 \title{Markov Gamma Model Summary}
 
 \description{
-Summary for the full Bayesian non-parametric Markov gamma survival analysis.
+Summary of the full Bayesian non-parametric Markov gamma survival analysis.
 }
 
 \usage{
 GaMRes(times, delta = rep(1, length(times)), type.t = 1, K = 5, 
-alpha = rep(0.001, K.aux), beta = rep(1e-04, K.aux),
+alpha = rep(0.0001, K.aux), beta = rep(1e-04, K.aux),
 c.r = rep(0, (K.aux - 1)), type.c = 4, epsilon = 1, iterations = 1000,
 burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
 }
@@ -25,14 +25,14 @@ burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
   \item{c.r}{Correlation vector. Its entries must be nonnegative integers.}
   \item{type.c}{1=defines \code{c.r} as a zero-entry vector; 2=lets the user define \code{c.r} feeely; 3=defines \code{c.r} by computing an exponential distribution with mean 1; 4=defines \code{c.r} by computing an exponential distribution with mean \code{epsilon}.}
   \item{epsilon}{Double. Mean of the exponential distribution assigned to \code{c.r} when \code{type.c}=4.}
-  \item{iterations}{Integer. Number of iterations incluiding the \code{burn.in} to be computed by the model.}
+  \item{iterations}{Integer. Number of iterations including the \code{burn.in} to be computed by the model.}
   \item{burn.in}{Integer. Length of the burn-in period for the Markov chain.}
   \item{thinning}{Logical. \code{TRUE} thins the Markov chain to reduce autocorrelation.}
   \item{thpar}{Integer. Factor by which the chain will be thinned if \code{thinning}=\code{TRUE}.}
   \item{printtime}{Logical. If \code{TRUE}, prints out the execution time.}
 }
 
-\details{Computes the Gibbs sampler given by the full conditional distributions of u and lambda (Nieto-Barajas & Walker, 2002), and arranges the resulting Markov chain into a matrix which can be useful to obtain posterior summaries.
+\details{Computes the Gibbs sampler given by the full conditional distributions of u and lambda (Nieto-Barajas & Walker, 2002) and arranges the resulting Markov chain into a matrix which can be used to obtain posterior summaries.
 }
 
 \value{
@@ -60,11 +60,13 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 }
 
 \examples{
-## Examples are be computing intensive. Be patient.
+## Computing examples is time intensive. Be patient.
 ## require(MASS)
 ## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
-## times <- data1[, 1]; delta <- data1[, 2]
-## EX <- GaMRes(times, delta)
-## EX <- GaMRes(times, delta, type.t = 2, type.c = 2, K=35,
-## alpha = rep(0.0001, 35), beta=rep(0.0001, 35), c.r = rep(10, 34))
+## times <- data1[, 1]
+## delta <- data1[, 2]
+## EX <- GaMRes(times, delta, K = 8, iterations = 3000)
+## EX <- GaMRes(times, delta, type.t = 2, type.c = 2, K=35, 
+## alpha = rep(0.0001, 35), beta=rep(0.0001, 35), c.r = rep(10, 34),
+## iterations = 3000)
 }

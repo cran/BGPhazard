@@ -5,7 +5,7 @@
 \title{Markov Beta Model Summary}
 
 \description{
-Summary for the full Bayesian non-parametric Markov beta survival analysis.
+Summary of the full Bayesian non-parametric Markov beta survival analysis.
 }
 
 \usage{
@@ -20,10 +20,10 @@ thpar = 5, printtime = TRUE)
   \item{delta}{Logical vector. Status indicator. \code{TRUE} (1) indicates exact lifetime is known, \code{FALSE} (0) indicates that the corresponding failure time is right censored.}
   \item{alpha}{Nonnegative vector. Small entries are recommended in order to specify a non-informative prior distribution.}
   \item{beta}{Nonnegative vector. Small entries are recommended in order to specify a non-informative prior distribution.}
-  \item{c.r}{Nonnegative vector. The higher te entries, the higher te correlation of two consecutive intervals.}
+  \item{c.r}{Nonnegative vector. The higher the entries, the higher the correlation of two consecutive intervals.}
   \item{type.c}{Integer. 1=defines \code{c.r} as a zero-entry vector; 2=lets the user define \code{c.r} feeely; 3=defines \code{c.r} by computing an exponential distribution with mean 1; 4=defines \code{c.r} by computing an exponential distribution with mean \code{epsilon}.}
   \item{epsilon}{Double. Mean of the exponential distribution assigned to \code{c.r} when \code{type.c}=4.}
-  \item{iterations}{Integer. Number of iterations incluiding the \code{burn.in} to be computed by the model.}
+  \item{iterations}{Integer. Number of iterations including the \code{burn.in} to be computed by the model.}
   \item{burn.in}{Integer. Length of the burn-in period for the Markov chain.}
   \item{thinning}{Logical. \code{TRUE} thins the Markov chain to reduce autocorrelation.}
   \item{thpar}{Integer. Factor by which the chain will be thinned if \code{thinning}=\code{TRUE}.}
@@ -31,7 +31,7 @@ thpar = 5, printtime = TRUE)
 }
 
 \details{
-Computes the Gibbs sampler given by the full conditional distributions of u and Pi (Nieto-Barajas & Walker, 2002), and arranges the resulting Markov chain into a matrix which can be useful to obtain posterior summaries.
+Computes the Gibbs sampler given by the full conditional distributions of u and Pi (Nieto-Barajas & Walker, 2002) and arranges the resulting Markov chain into a matrix which can be used to obtain posterior summaries.
 }
 
 \value{
@@ -58,12 +58,12 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 }
 
 \examples{
-## Examples are be computing intensive. Be patient.
+## Computing examples is time intensive. Be patient.
 ## require(KMsurv)
 ## data(psych)
 ## times <- psych[, 3]
 ## delta <- psych[, 4]
-## EX <- BeMRes(times, delta)
+## EX <- BeMRes(times, delta, iterations = 3000)
 ## EX <- BeMRes(times, delta, type.c = 2, alpha = rep(0.0001, 40),
 ## beta = rep(0.0001, 40), c.r = rep(10, 39))
 }

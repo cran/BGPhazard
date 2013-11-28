@@ -1,6 +1,6 @@
 GaMRes <-
 function(times, delta = rep(1, length(times)), type.t = 1, K = 5, 
-                   alpha = rep(0.001, K.aux), beta = rep(0.0001, K.aux), 
+                   alpha = rep(0.0001, K.aux), beta = rep(0.0001, K.aux), 
                    c.r = rep(0, (K.aux - 1)), type.c = 4, epsilon = 1, 
                    iterations = 1000, burn.in = floor(iterations * 0.2), 
                    thinning = TRUE, thpar = 5, printtime = TRUE) {
