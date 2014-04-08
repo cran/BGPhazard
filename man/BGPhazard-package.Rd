@@ -6,7 +6,7 @@
 
 \docType{package}
 
-\title{Markov beta and gamma processes for modeling hazard rates}
+\title{Markov Beta and Gamma Processes for Modeling Hazard Rates}
 
 \description{Computes the hazard rate estimate as described by Nieto-Barajas & Walker (2002) and Nieto-Barajas (2003).}
 
@@ -14,8 +14,8 @@
   \tabular{ll}{
     Package: \tab BGPhazard\cr
     Type: \tab Package\cr
-    Version: \tab 0.9.2\cr
-    Date: \tab 2013-11-25\cr
+    Version: \tab 1.0\cr
+    Date: \tab 2014-04-07\cr
     License: \tab GPL version 2 or later\cr
   }
 }
