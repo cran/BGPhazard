@@ -18,7 +18,7 @@ burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
 \arguments{
   \item{times}{Numeric positive vector. Failure times.}
   \item{delta}{Logical vector. Status indicator. \code{TRUE} (1) indicates exact lifetime is known, \code{FALSE} (0) indicates that the corresponding failure time is right censored.}
-  \item{type.t}{Integer. 1=computes same length intervals; 2=unitary length intervals and 3=uniformly-dense intervals.}
+  \item{type.t}{Integer. 1=uniformly-dense intervals; 2=unitary length intervals and 3=computes same length intervals.}
   \item{K}{Integer. Partition length for the hazard function if \code{type.t}=1 or \code{type.t}=3.} 
   \item{alpha}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
   \item{beta}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
@@ -60,13 +60,13 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 }
 
 \examples{
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## require(MASS)
-## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
+## data1 <- gehan[gehan[, 4] == "6-MP", 2:3]
 ## times <- data1[, 1]
 ## delta <- data1[, 2]
-## EX <- GaMRes(times, delta, K = 8, iterations = 3000)
-## EX <- GaMRes(times, delta, type.t = 2, type.c = 2, K=35, 
-## alpha = rep(0.0001, 35), beta=rep(0.0001, 35), c.r = rep(10, 34),
-## iterations = 3000)
+## GEX1 <- GaMRes(times, delta, K = 8, iterations = 3000)
+## GEX2 <- GaMRes(times, delta, K = 8, type.c = 4, iterations = 3000)
+## GEX3 <- GaMRes(times, delta, type.t = 2, type.c = 2, K = 35,
+## c.r = rep(10, 34), iterations = 3000)
 }

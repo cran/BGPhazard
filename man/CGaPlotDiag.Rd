@@ -30,7 +30,7 @@ CGaPlotDiag(M, variable = "lambda", pos = 1)
 \seealso{\link{CGaMRes}}
 
 \examples{ 
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## leukemia1 <- read.table("http://allman.rhon.itam.mx/~lnieto/index_archivos/Leucemia.txt",
 ## header = TRUE)
 ## leukemia1 <- as.matrix(cbind(leukemia1[, 1:3], log(leukemia1[, 4])))

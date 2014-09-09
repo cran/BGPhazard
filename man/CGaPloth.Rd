@@ -46,7 +46,7 @@ This function return plots for the resulting hazard rate as it is computed by \c
 }
 
 \examples{
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## require(MASS)
 ## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
 ## times <- data1[, 1]; delta <- data1[, 2]

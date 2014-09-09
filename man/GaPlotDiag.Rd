@@ -28,12 +28,12 @@ Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for
 \seealso{\link{GaMRes}}
 
 \examples{ 
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## require(MASS)
-## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
+## data1 <- gehan[gehan[, 4] == "6-MP", 2:3]
 ## times <- data1[, 1]
 ## delta <- data1[, 2]
-## EX <- GaMRes(times, delta, K = 8, iterations = 3000)
-## GaPlotDiag(EX, variable = "lambda", pos = 2)
-## GaPlotDiag(EX, variable = "u", pos = 5)
+## GEX1 <- GaMRes(times, delta, K = 8, iterations = 3000)
+## GaPlotDiag(GEX1, variable = "lambda", pos = 2)
+## GaPlotDiag(GEX1, variable = "u", pos = 5)
 }

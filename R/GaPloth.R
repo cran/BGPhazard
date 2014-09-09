@@ -13,7 +13,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
   }
   if (fun == "h" || fun == "both") {
     d <-0
-    if (h.NA == TRUE) {
+    if (h.NA == TRUE || KM == TRUE) {
       h.est <- fit$n.event / fit$n.risk
       if (confint == TRUE) {
         d <- 3
@@ -22,8 +22,16 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
     if (h.NA == FALSE && confint == FALSE) {
       d <- 3
     }
-    plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d])), "n", xlab = "time", 
-         ylab = "Hazard rate", main = "Estimate of hazard rates")
+    if (h.NA == TRUE || KM == TRUE) {
+      plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d], h.est)), "n", 
+           xlab = "time", ylab = "Hazard rate", 
+           main = "Estimate of hazard rates")
+    }
+    else {
+      plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d])), "n", 
+           xlab = "time", ylab = "Hazard rate", 
+           main = "Estimate of hazard rates")
+    }
     if (h.NA == TRUE) {
       points(x = fit$time, y = h.est, pch = "+", col = "slateblue4")
     }
@@ -94,8 +102,8 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
         plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", ylab = "", 
              main = "Estimate of Survival Function")
         lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
-        lines(fit, type = "s", xlab = "times", ylab = "", lty = 2, lwd = 1, 
-              col = "slateblue4")
+        lines(fit, conf.int = FALSE, type = "s", xlab = "times", ylab = "", lty = 2, 
+              lwd = 1, col = "slateblue4")
       }
     }
     par(mfrow = c(1, 1), ask = FALSE)

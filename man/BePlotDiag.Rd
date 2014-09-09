@@ -29,12 +29,12 @@ Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for
 \seealso{\link{BeMRes}}
 
 \examples{
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## require(KMsurv)
 ## data(psych)
 ## times <- psych[, 3]
 ## delta <- psych[, 4]
-## EX <- BeMRes(times, delta, iterations = 3000)
-## BePlotDiag(EX, variable = "Pi", pos = 2)
-## BePlotDiag(EX, variable = "u", pos = 3)
+## BEX1 <- BeMRes(times, delta, iterations = 3000)
+## BePlotDiag(BEX1, variable = "Pi", pos = 2)
+## BePlotDiag(BEX1, variable = "u", pos = 3)
 }

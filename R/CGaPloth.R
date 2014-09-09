@@ -12,7 +12,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
   }
   if (fun == "h" || fun == "both") {
     d <-0
-    if (h.NA == TRUE) {
+    if (h.NA == TRUE || KM == TRUE) {
       h.est <- fit$n.event / fit$n.risk
       if (confint == TRUE) {
         d <- 3
@@ -21,8 +21,16 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
     if (h.NA == FALSE && confint == FALSE) {
       d <- 3
     }
-    plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d])), "n", xlab = "time", 
-         ylab = "Hazard rate", main = "Baseline hazard estimate")
+    if (h.NA == TRUE) {
+      plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d], h.est)), "n", 
+           xlab = "time", ylab = "Hazard rate", 
+           main = "Baseline hazard estimate")
+    }
+    else {
+      plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d])), "n", 
+           xlab = "time", ylab = "Hazard rate", 
+           main = "Baseline hazard estimate")
+    }
     if (h.NA == TRUE) {
       points(x = fit$time, y = h.est, pch = "+", col = "slateblue4")
     }
@@ -94,23 +102,23 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
         plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", ylab = "", 
              main = "Baseline survival function")
         lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
-        lines(fit, type = "s", xlab = "times", ylab = "", lty = 2, lwd = 1, 
-              col = "slateblue4")
+        lines(fit, conf.int = FALSE, type = "s", xlab = "times", ylab = "", 
+              lty = 2, lwd = 1, col = "slateblue4")
       }
     }
     par(mfrow = c(1, 1), ask = FALSE)
     if (legend == TRUE) {
       if ((fun == "S" || fun == "both") && KM == TRUE && confint == FALSE) {
-        legend(x = "bottomleft", c("Model estimate", "Kaplan-Meier"), 
+        legend(x = "topright", c("Model estimate", "Kaplan-Meier"), 
                lty = c(1, 1), col = c(1, "slateblue4"), bty = "n", 
                lwd = c(2, 1), cex = 0.8)
       }
       if ((fun == "S" || fun == "both") && KM == FALSE && confint == FALSE) {
-        legend(x = "bottomleft", "Model estimate", lty = 1, col = 1, bty = "n", 
+        legend(x = "topright", "Model estimate", lty = 1, col = 1, bty = "n", 
                lwd = 2, cex = 0.8)
       }
       if ((fun == "S" || fun == "both") && KM == TRUE && confint == TRUE) {
-        legend(x = "bottomleft", 
+        legend(x = "topright", 
                c("Model estimate", paste("Confidence bound (", 
                                          confidence * 100,
                                          "%)", sep = ""), "Kaplan-Meier",
@@ -120,7 +128,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
                lwd = c(2, 2, 1, 1), cex = 0.8)
       }
       if ((fun == "S" || fun == "both") && KM == FALSE && confint == TRUE) {
-        legend(x = "bottomleft", c("Model estimate", 
+        legend(x = "topright", c("Model estimate", 
                                    paste("Confidence bound (", 
                                          confidence * 100, 
                                          "%)", sep = "")), lty = c(1, 2), 

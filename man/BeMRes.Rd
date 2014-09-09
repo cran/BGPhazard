@@ -58,12 +58,11 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 }
 
 \examples{
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## require(KMsurv)
 ## data(psych)
 ## times <- psych[, 3]
 ## delta <- psych[, 4]
-## EX <- BeMRes(times, delta, iterations = 3000)
-## EX <- BeMRes(times, delta, type.c = 2, alpha = rep(0.0001, 40),
-## beta = rep(0.0001, 40), c.r = rep(10, 39))
+## BEX1 <- BeMRes(times, delta, iterations = 3000)
+## BEX2 <- BeMRes(times, delta, type.c = 2, c.r = rep(100, 39))
 }

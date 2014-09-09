@@ -17,7 +17,7 @@ thinning = TRUE, thpar = 3, printtime = TRUE)
 
 \arguments{
   \item{data}{Numeric matrix. Contains failure times in the first column, status indicator in the second, and, from the third to the last column, the varying covariate(s).}
-  \item{type.t}{Integer. 1=computes same length intervals; 2=unitary length intervals and 3=uniformly-dense intervals.}
+  \item{type.t}{Integer. 1=computes uniformly-dense intervals; 2=unitary length intervals and 3=same length intervals.}
   \item{K}{Integer. Partition length for the hazard function if \code{type.t}=1 or \code{type.t}=3.} 
   \item{alpha}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
   \item{beta}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
@@ -64,7 +64,7 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 }
 
 \examples{
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## leukemia1 <- read.table("http://allman.rhon.itam.mx/~lnieto/index_archivos/Leucemia.txt",
 ## header = TRUE)
 ## leukemia1 <- as.matrix(cbind(leukemia1[, 1:3], log(leukemia1[, 4])))

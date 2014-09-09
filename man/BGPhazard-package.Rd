@@ -14,8 +14,8 @@
   \tabular{ll}{
     Package: \tab BGPhazard\cr
     Type: \tab Package\cr
-    Version: \tab 1.0\cr
-    Date: \tab 2014-04-07\cr
+    Version: \tab 1.1\cr
+    Date: \tab 2014-09-08\cr
     License: \tab GPL version 2 or later\cr
   }
 }
@@ -35,11 +35,11 @@ Maintainer: Jose Antonio Garcia Bueno <joseagbueno@gmail.com>
 \keyword{ package }
 
 \examples{
-## Computing examples is time intensive. Be patient.
+## Simulations may be time intensive. Be patient.
 ## require(MASS)
-## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
+## data1 <- gehan[gehan[, 4] == "6-MP", 2:3]
 ## times <- data1[, 1]
 ## delta <- data1[, 2]
-## EX <-GaMRes(times, delta, type.t = 2, type.c = 3, K = 35, iterations = 3000)
-## GaPloth(EX, confint = FALSE)
+## GEX1 <- GaMRes(times, delta, K = 8, iterations = 3000)
+## GaPloth(GEX1, fun = "both", confint = TRUE)
 }

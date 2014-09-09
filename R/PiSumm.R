@@ -17,7 +17,6 @@ function(M, confidence = 0.95) {
     SUM.h[k, 4] <- quantile(M$summary[k, ], probs = 0.5)
     SUM.h[k, 5] <- quantile(M$summary[k, ], probs = 1 - pr)
   }
-  SUM.h <- rbind(c(rep(0, 5)), SUM.h)
   colnames(SUM.h) <- c("k", "mean(Pi)", pr, 0.50, 1 - pr)
   for(k in 1:K) {
     SUM.S[k, 1] <- S[k, 1] + 1
