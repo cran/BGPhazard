@@ -22,18 +22,27 @@ GaPlotDiag(M, variable = "lambda", pos = 1)
 }
 
 \references{
-Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
+- Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. \emph{Scandinavian Journal of Statistics} \strong{29}: 413-424.
 }
 
 \seealso{\link{GaMRes}}
 
 \examples{ 
 ## Simulations may be time intensive. Be patient.
-## require(MASS)
-## data1 <- gehan[gehan[, 4] == "6-MP", 2:3]
-## times <- data1[, 1]
-## delta <- data1[, 2]
-## GEX1 <- GaMRes(times, delta, K = 8, iterations = 3000)
-## GaPlotDiag(GEX1, variable = "lambda", pos = 2)
-## GaPlotDiag(GEX1, variable = "u", pos = 5)
+
+## Example 1
+#  data(gehan)
+#  timesG <- gehan$time[gehan$treat == "6-MP"]
+#  deltaG <- gehan$cens[gehan$treat == "6-MP"]
+#  GEX1 <- GaMRes(timesG, deltaG, K = 8, iterations = 3000)
+#  GaPlotDiag(GEX1, variable = "lambda", pos = 2)
+#  GaPlotDiag(GEX1, variable = "u", pos = 5)
+
+## Example 2
+#  data(leukemiaFZ)
+#  timesFZ <- leukemiaFZ$time
+#  deltaFZ <- leukemiaFZ$delta
+#  GEX2 <- GaMRes(timesFZ, deltaFZ, type.c = 4)
+#  GaPlotDiag(GEX2, variable = "lambda", pos = 2)
+#  GaPlotDiag(GEX2, variable = "u", pos = 3)
 }

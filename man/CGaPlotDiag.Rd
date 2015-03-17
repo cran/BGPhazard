@@ -22,19 +22,21 @@ CGaPlotDiag(M, variable = "lambda", pos = 1)
 }
 
 \references{
-1. Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
+- Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. \emph{Bulletin of the International Statistical Institute 54th Session}. Berlin. (CD-ROM).
 
-2. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM)
+- Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. \emph{Scandinavian Journal of Statistics} \strong{29}: 413-424.
 }
 
 \seealso{\link{CGaMRes}}
 
 \examples{ 
 ## Simulations may be time intensive. Be patient.
-## leukemia1 <- read.table("http://allman.rhon.itam.mx/~lnieto/index_archivos/Leucemia.txt",
-## header = TRUE)
-## leukemia1 <- as.matrix(cbind(leukemia1[, 1:3], log(leukemia1[, 4])))
-## EX <- CGaMRes(data = leukemia1, K = 10, iterations = 3000)
-## CGaPlotDiag(EX, variable = "lambda", pos = 2)
-## CGaPlotDiag(EX, variable = "u", pos = 3)
+
+## Example 1
+#  data(leukemiaFZ)
+#  leukemia1 <- leukemiaFZ
+#  leukemia1$wbc <- log(leukemiaFZ$wbc)
+#  CGEX1 <- CGaMRes(data = leukemia1, K = 10, iterations = 10000, thpar = 10)
+#  CGaPlotDiag(CGEX1, variable = "lambda", pos = 2)
+#  CGaPlotDiag(CGEX1, variable = "u", pos = 3)
 }

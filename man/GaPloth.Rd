@@ -34,7 +34,7 @@ This function return plots for the resulting hazard rate as it is computed by \c
 }
 
 \references{
-Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
+- Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. \emph{Scandinavian Journal of Statistics} \strong{29}: 413-424.
 }
 
 \section{Warning}{The argument \code{fun} is case-sensitive and requires quotations as its class is character.}
@@ -45,11 +45,19 @@ Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for
 
 \examples{
 ## Simulations may be time intensive. Be patient.
-## require(MASS)
-## data1 <- gehan[gehan[, 4] == "6-MP", 2:3]
-## times <- data1[, 1]
-## delta <- data1[, 2]
-## GEX1 <- GaMRes(times, delta, K = 8, iterations = 3000)
-## GaPloth(GEX1, confint = FALSE)
-## GaPloth(GEX1, fun = "both", confint = TRUE)
+
+## Example 1
+#  data(gehan)
+#  timesG <- gehan$time[gehan$treat == "6-MP"]
+#  deltaG <- gehan$cens[gehan$treat == "6-MP"]
+#  GEX1 <- GaMRes(timesG, deltaG, K = 8, iterations = 3000)
+#  GaPloth(GEX1, confint = FALSE)
+#  GaPloth(GEX1, fun = "both", confint = TRUE)
+
+## Example 2
+#  data(leukemiaFZ)
+#  timesFZ <- leukemiaFZ$time
+#  deltaFZ <- leukemiaFZ$delta
+#  GEX2 <- GaMRes(timesFZ, deltaFZ, type.c = 4)
+#  GaPloth(GEX2, fun = "both", confint = TRUE)
 }

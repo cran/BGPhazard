@@ -35,10 +35,10 @@ BePloth <-
       for(k in 1:K) {
         points(x = k, y = SUM.h[k, 2], pch = 20)
         if (confint == TRUE) {
-          points(x = k, y = SUM.h[k, 3], pch="-", col = "darkred")
-          points(x = k, y = SUM.h[k, 5], pch="-", col = "darkred")
+          points(x = k, y = SUM.h[k, 3], pch="-", col = 1)
+          points(x = k, y = SUM.h[k, 5], pch="-", col = 1)
           segments(x0 = k, y0 = SUM.h[k, 3], x1 = k, y1 = SUM.h[k, 5], 
-                   col = "darkred", lty = 2)
+                   col = 1, lty = 2)
         }
       }
       if (legend == TRUE) {
@@ -49,7 +49,7 @@ BePloth <-
         if (confint == TRUE && h.NA == FALSE) {
           legend("topleft", c("Hazard function", 
                               paste("Confidence band (", confidence * 100, "%)")), 
-                 lty = c(1, 2), lwd = c(2, 1), col = c(1, "darkred"), bty = "n",
+                 lty = c(1, 2), lwd = c(2, 1), col = c(1, 1), bty = "n",
                  cex = 0.8)
         }
         if (confint == FALSE && h.NA == TRUE) {
@@ -63,7 +63,7 @@ BePloth <-
                    paste("Confidence band (", confidence * 100, "%)", 
                          sep = ""), "Nelson-Aalen based estimate"), 
                  lty = c(1, 2, 0), lwd = c(2, 1, 1), 
-                 col = c(1, "darkred", "slateblue4"), bty = "n", cex = 0.8, 
+                 col = c(1, 1, "slateblue4"), bty = "n", cex = 0.8, 
                  pch = c("", "", "+"))
         }
       }
@@ -81,9 +81,9 @@ BePloth <-
         lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
         if (confint == TRUE) {
           lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "l", lty = 2, lwd = 2, 
-                col = "darkred")
+                col = 1)
           lines(x = SUM.S[, 1], y = SUM.S[, 5], type = "l", lty = 2, lwd = 2, 
-                col = "darkred")
+                col = 1)
         }
       }
       if (KM == TRUE) {
@@ -92,9 +92,9 @@ BePloth <-
                main = "Estimate of Survival Function", col = "slateblue4")
           lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "s", lwd = 2)
           lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "s", lty = 2, lwd = 2, 
-                col = "darkred")
+                col = 1)
           lines(x = SUM.S[, 1], y = SUM.S[, 5], type = "s", lty = 2, lwd = 2, 
-                col = "darkred")
+                col = 1)
         }
         if (confint == FALSE) {
           plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", ylab = "", 
@@ -120,14 +120,14 @@ BePloth <-
                                                              sep = ""), "Kaplan-Meier", 
                                      paste("KM Confidence bound (", confidence * 100, "%)",
                                            sep = "")), lty = c(1, 2, 1, 2),
-                 col = c(1, "red", "slateblue4", "slateblue4"),
+                 col = c(1, 1, "slateblue4", "slateblue4"),
                  bty = "n", lwd = c(2, 2, 1, 1), cex = 0.75)
         }
         if ((fun == "S" || fun == "both") && KM == FALSE && confint == TRUE) {
           legend(x = "bottomleft", c("Model estimate", paste("Confidence bound (", 
                                                              confidence * 100, "%)",
                                                              sep = "")), lty = c(1, 2), 
-                 col = c(1, "red"), bty = "n", lwd = c(2, 2), cex = 0.75)
+                 col = c(1, 1), bty = "n", lwd = c(2, 2), cex = 0.75)
         }
       }
     }

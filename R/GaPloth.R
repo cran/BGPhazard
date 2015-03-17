@@ -40,9 +40,9 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
                y1 = SUM.h[i, 2], lty = 1, lwd = 2.5)
       if (confint  == TRUE) {
         segments(x0 = tao[i], y0 = SUM.h[i, 3], x1 = tao[i + 1],
-                 y1 = SUM.h[i, 3], lty = 2, col = "darkred")
+                 y1 = SUM.h[i, 3], lty = 2, col = 1)
         segments(x0 = tao[i], y0 = SUM.h[i, 5], x1 = tao[i + 1],
-                 y1 = SUM.h[i, 5], lty = 2, col = "darkred")
+                 y1 = SUM.h[i, 5], lty = 2, col = 1)
       }
     }
     if (legend == TRUE) {
@@ -54,7 +54,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
         legend("topleft", c("Hazard function", paste("Confidence band (", 
                                                      confidence * 100, "%)",
                                                      sep="")), lty = c(1, 2), 
-               lwd = c(2, 1), col = c(1, "darkred"), bty = "n", cex = 0.8)
+               lwd = c(2, 1), col = c(1, 1), bty = "n", cex = 0.8)
       }
       if (confint == FALSE && h.NA == TRUE) {
         legend("topleft", c("Hazard function", "Nelson-Aalen based estimate"), 
@@ -66,7 +66,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
                c("Hazard function", paste("Confidence band (", confidence * 100,
                                           "%)",sep=""),
                  "Nelson-Aalen based estimate"), lty = c(1, 2, 0),
-               lwd = c(2, 1, 1), col = c(1, "darkred", "slateblue4"),
+               lwd = c(2, 1, 1), col = c(1, 1, "slateblue4"),
                bty = "n", cex = 0.8, pch=c("","","+"))
       }
     }
@@ -83,9 +83,9 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
                       lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
                       if (confint == TRUE) {
                         lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "l", 
-                              lty = 2, lwd = 2, col = "darkred")
+                              lty = 2, lwd = 2, col = 1)
                         lines(x = SUM.S[, 1], y = SUM.S[, 5], type = "l",
-                              lty = 2, lwd = 2, col = "darkred")
+                              lty = 2, lwd = 2, col = 1)
                       }
     }
     if (KM == TRUE) {
@@ -94,9 +94,9 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
              main = "Estimate of Survival Function", col = "slateblue4")
         lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
         lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "l", lty = 2, lwd = 2, 
-              col = "darkred")
+              col = 1)
         lines(x = SUM.S[, 1], y = SUM.S[, 5], type = "l", lty = 2, lwd = 2, 
-              col = "darkred")
+              col = 1)
       }
       if (confint == FALSE) {
         plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", ylab = "", 
@@ -124,7 +124,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
                                          "%)", sep = ""), "Kaplan-Meier",
                  paste("KM Confidence bound (", confidence * 100, "%)", 
                        sep = "")), lty = c(1, 2, 1, 2), 
-               col = c(1, "red", "slateblue4", "slateblue4"), bty = "n", 
+               col = c(1, 1, "slateblue4", "slateblue4"), bty = "n", 
                lwd = c(2, 2, 1, 1), cex = 0.8)
       }
       if ((fun == "S" || fun == "both") && KM == FALSE && confint == TRUE) {
@@ -132,7 +132,7 @@ function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE,
                                   paste("Confidence bound (", 
                                         confidence * 100, 
                                         "%)", sep = "")), lty = c(1, 2), 
-               col = c(1, "red"), bty = "n", lwd = c(2, 2), cex = 0.8)
+               col = c(1, 1), bty = "n", lwd = c(2, 2), cex = 0.8)
       }
     }
   }

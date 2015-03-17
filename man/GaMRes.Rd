@@ -2,10 +2,10 @@
 
 \alias{GaMRes}
 
-\title{Markov Gamma Model Summary}
+\title{Markov Gamma Model}
 
 \description{
-Summary of the full Bayesian non-parametric Markov gamma survival analysis.
+Posterior inference for the Bayesian non-parametric Markov gamma model in survival analysis.
 }
 
 \usage{
@@ -23,8 +23,9 @@ burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
   \item{alpha}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
   \item{beta}{Nonnegative entry vector. Small entries are recommended in order to specify a non-informative prior distribution.}
   \item{c.r}{Correlation vector. Its entries must be nonnegative integers.}
-  \item{type.c}{1=defines \code{c.r} as a zero-entry vector; 2=lets the user define \code{c.r} feeely; 3=defines \code{c.r} by computing an exponential distribution with mean 1; 4=defines \code{c.r} by computing an exponential distribution with mean \code{epsilon}.}
-  \item{epsilon}{Double. Mean of the exponential distribution assigned to \code{c.r} when \code{type.c}=4.}
+  \item{type.c}{1=defines \code{c.r} as a zero-entry vector; 2=lets the user define \code{c.r} feeely; 3=defines \code{c.r} by computing an exponential distribution with mean 1; 4=defines \code{c.r} by computing an exponential distribution with mean \code{epsilon} which has assigned a Ga(0.01, 0.01) distribution.}
+  \item{epsilon}{Double. Mean of the exponential distribution assigned to \code{c.r} when
+\code{type.c = 3}. When \code{type.c = 4}, \code{epsilon} is assigned a Ga(0.01,0.01) distribution.}
   \item{iterations}{Integer. Number of iterations including the \code{burn.in} to be computed by the model.}
   \item{burn.in}{Integer. Length of the burn-in period for the Markov chain.}
   \item{thinning}{Logical. \code{TRUE} thins the Markov chain to reduce autocorrelation.}
@@ -48,7 +49,7 @@ burn.in = floor(iterations * 0.2), thinning = TRUE, thpar = 5, printtime = TRUE)
 }
 
 \references{
-Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
+- Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. \emph{Scandinavian Journal of Statistics} \strong{29}: 413-424.
 }
 
 \note{
@@ -61,12 +62,16 @@ It is recommended to verify chain's stationarity. This can be done by checking e
 
 \examples{
 ## Simulations may be time intensive. Be patient.
-## require(MASS)
-## data1 <- gehan[gehan[, 4] == "6-MP", 2:3]
-## times <- data1[, 1]
-## delta <- data1[, 2]
-## GEX1 <- GaMRes(times, delta, K = 8, iterations = 3000)
-## GEX2 <- GaMRes(times, delta, K = 8, type.c = 4, iterations = 3000)
-## GEX3 <- GaMRes(times, delta, type.t = 2, type.c = 2, K = 35,
-## c.r = rep(10, 34), iterations = 3000)
+
+## Example 1
+#  data(gehan)
+#  timesG <- gehan$time[gehan$treat == "6-MP"]
+#  deltaG <- gehan$cens[gehan$treat == "6-MP"]
+#  GEX1 <- GaMRes(timesG, deltaG, K = 8, iterations = 3000)
+
+## Example 2
+#  data(leukemiaFZ)
+#  timesFZ <- leukemiaFZ$time
+#  deltaFZ <- leukemiaFZ$delta
+#  GEX2 <- GaMRes(timesFZ, deltaFZ, type.c = 4)
 }

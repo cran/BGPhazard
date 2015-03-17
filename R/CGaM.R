@@ -1,6 +1,6 @@
 CGaM <-
 function(times, delta, type.t, K, covar, theta) {
-  tao <- CGaTao(times, delta, type.t, K)
+  tao <- GaTao(times, delta, type.t, K)
   if (type.t == 2) {
     K <- ceiling(max(times))
   }

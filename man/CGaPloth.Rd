@@ -5,11 +5,11 @@
 \title{Plots for the Hazard and Survival Function Estimates}
 
 \description{
-Plots the resulting hazard function along with the survival function estimate defined by the Markov gamma process with time dependent covariates (Nieto-Barajas, 2003).
+Plots the resulting hazard function along with the survival function estimate defined by the Markov gamma process with covariates (Nieto-Barajas, 2003).
 }
 
 \usage{
-CGaPloth(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE, 
+CGaPloth(M, fun = "both", confint = TRUE, h.NA = FALSE, KM = FALSE, 
 confidence = 0.95, summary = FALSE, legend = TRUE)
 }
 
@@ -34,9 +34,9 @@ This function return plots for the resulting hazard rate as it is computed by \c
 }
 
 \references{
-1. Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. Scandinavian Journal of Statistics 29, 413-424.
+- Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. \emph{Bulletin of the International Statistical Institute 54th Session}. Berlin. (CD-ROM).
 
-2. Nieto-Barajas, L. E. (2003). Discrete time Markov gamma processes and time dependent covariates in survival analysis. Bulletin of the International Statistical Institute 54th Session. Berlin. (CD-ROM)
+- Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma processes for modelling hazard rates. \emph{Scandinavian Journal of Statistics} \strong{29}: 413-424.
 }
 
 \section{Warning}{The argument \code{fun} is case-sensitive and requires quotations as its \code{class} is character.}
@@ -47,10 +47,32 @@ This function return plots for the resulting hazard rate as it is computed by \c
 
 \examples{
 ## Simulations may be time intensive. Be patient.
-## require(MASS)
-## data1 <- gehan[gehan[,4] == "6-MP", 2:3]
-## times <- data1[, 1]; delta <- data1[, 2]
-## EX <- GaMRes(times, delta)
-## CGaPloth(EX, confint = FALSE)
-## CGaPloth(EX, fun = "both", confint = TRUE)
+
+## Example 1
+#  data(leukemiaFZ)
+#  leukemia1 <- leukemiaFZ
+#  leukemia1$wbc <- log(leukemiaFZ$wbc)
+#  CGEX1 <- CGaMRes(data = leukemia1, K = 10, iterations = 10000, thpar = 10)
+#  CGaPloth(CGEX1, fun = "both", confint = TRUE)
+
+## Example 2. Refer to "Cox-gamma model example" section in package vignette for details.
+#  SampWeibull <- function(n, a = 10, b = 1, beta = c(1, 1)) {
+#    M <- matrix(0, ncol = 7, nrow = n)
+#    for(i in 1:n){
+#      M[i, 1] <- i
+#      M[i, 2] <- x1 <- runif(1)
+#      M[i, 3] <- x2 <- runif(1)
+#      M[i, 4] <- rweibull(1, shape = b, 
+#                          scale = 1 / (a * exp(cbind(x1, x2) %*% beta)))
+#      M[i, 5] <- rexp(1)
+#      M[i, 6] <- M[i, 4] > M[i, 5]
+#      M[i, 7] <- min(M[i, 4], M[i, 5])
+#      }
+#    colnames(M) <- c("i", "x_i1", "x_i2", "t_i", "c_i", "delta", "min{c_i, d_i}")
+#    return(M)
+#  }
+#  dat <- SampWeibull(100, 0.1, 1, c(1, 1))
+#  dat <- cbind(dat[, c(4, 6)], dat[, c(2, 3)])
+#  CG <- CGaMRes(dat, K = 10, iterations = 3000, thpar = 10)
+#  CGaPloth(CG)
 }

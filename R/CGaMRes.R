@@ -92,7 +92,7 @@ function(data, type.t = 1, K = 5, alpha = rep(0.001, K.aux),
   if (printtime != TRUE && printtime != FALSE) {
     stop ("Invalid argument: 'printtime' must be a logical value.")
   }
-  tao <- CGaTao(times, delta, type.t, K)
+  tao <- GaTao(times, delta, type.t, K)
   n <- CGaN(times, delta, type.t, K, covar)
   t.unc <- sort(times[delta==1])
   if (thinning == TRUE) {
@@ -116,15 +116,15 @@ function(data, type.t = 1, K = 5, alpha = rep(0.001, K.aux),
     if (floor(j / 200) == ceiling(j / 200)) {
       cat(c("Iteration ", j, " of ", iterations, ".", "\n"), sep = "")
     }
-    u.r <- CGaUpdU(alpha, beta, c.r, lambda.r)
+    u.r <- GaUpdU(alpha, beta, c.r, lambda.r)
     m <- CGaM(times, delta, type.t, K, covar, theta)
-    lambda.r <- CUpdLambda(alpha, beta, c.r, u.r, n, m)
+    lambda.r <- UpdLambda(alpha, beta, c.r, u.r, n, m)
     theta <- CUpdTheta(theta, lambda.r, times, delta, type.t, K, covar)
     if (type.c == 3 || type.c == 4) {
       if (type.c == 4) {
         epsilon <- rgamma(1, shape = 0.01 + K, scale = 1 / (0.01 + sum(c.r)))
       }
-      c.r <- CGaUpdC(alpha, beta, c.r, lambda.r, u.r, epsilon)
+      c.r <- GaUpdC(alpha, beta, c.r, lambda.r, u.r, epsilon)
     }
     if (thinning == FALSE) {
       for(k in 1:K) {

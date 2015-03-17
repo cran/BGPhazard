@@ -230,18 +230,12 @@ We present some of the examples contained in the documentation of the package to
 
 \subsection{Gamma model examples}
 
-For this model, we will be using the control observations of the 6-MP data set --data from a trial of 42 leukemia patients organised by pairs in which the first element of the pair is treated with a drug and the other is control, see \code{MASS} package for details--. For examples 1 to 4, we use a partition of unitary length intervals; for the last three examples --5, 6 \& 7--, we use uniformly-dense intervals.
+For this model, we will be using the control observations of the 6-MP data set (Freireich, E. J., et al., 1963) --data from a trial of 42 leukemia patients organised by pairs in which the first element of the pair is treated with a drug and the other is control--. For examples 1 to 4, we use a partition of unitary length intervals; for the last three examples --5, 6 \& 7--, we use uniformly-dense intervals. The \code{"time"} column is taken as the observed times vector --\code{times}-- and the \code{"cens"} column as the censoring status vector --\code{delta}--:
 
-<<echo=TRUE, eval=TRUE>>=
-require(MASS)
-data1 <- gehan[gehan[,4] == "6-MP", 2:3]
-data1
-@
-
-The \code{"time"} column is taken as the observed times vector --\code{times}-- and the \code{"cens"} column as the censoring status vector --\code{delta}--:
 <<echo=TRUE, eval=FALSE>>=
-times <- data1[, 1]
-delta <- data1[, 2]
+data(gehan)
+times <- gehan$time[gehan$treat == "6-MP"]
+delta <- gehan$cens[gehan$treat == "6-MP"]
 @
 
 Now that we have a time and censoring status vector, we can run several examples for this model. Default values are used for each function unless otherwise noted. Every example shows our estimate overlapped with the Nelson-Aalen / Kaplan-Meier estimator, so the user can compare them.
@@ -430,15 +424,12 @@ GaPloth(ExG7)
 %\clearpage
 
 \subsection{Beta model examples}
-For this model, we use survival data on 26 psychiatric inpatients admitted to the University of Iowa hospitals during the years 1935-1948. This sample is part of a larger study of psychiatric inpatients discussed by Tsuang and Woolson (1977) and it is contained in the \code{KMsurv} package. We take the \code{"time"} column as the observed times vector --\code{times}-- and the \code{"death"} column as the censoring status vector --\code{delta}--:
+For this model, we use survival data on 26 psychiatric inpatients admitted to the University of Iowa hospitals during the years 1935-1948. This sample is part of a larger study of psychiatric inpatients discussed by Tsuang and Woolson (1977). We take the \code{"time"} column as the observed times vector --\code{times}-- and the \code{"death"} column as the censoring status vector --\code{delta}--:
 
-<<echo=TRUE, eval=TRUE>>=
-require(KMsurv)
+<<echo=TRUE, eval=FALSE>>=
 data(psych)
-data2 <- psych[, 3:4]
-data2
-times <- data2[, 1]
-delta <- data2[, 2]
+times <- psych$time
+delta <- psych$death
 @
 
 \subsubsection{Example 1. Independence case}
@@ -603,8 +594,8 @@ SampWeibull <- function(n, a = 10, b = 1, beta = c(1, 1)) {
   return(M)
 }
 dat <- SampWeibull(100, 0.1, 1, c(1, 1))
-dat <- cbind(data1[, c(4, 6)], data1[, c(2, 3)])
-CG <- CGaMRes(data1, K = 10, iterations = 3000, thpar = 10)
+dat <- cbind(dat[, c(4, 6)], dat[, c(2, 3)])
+CG <- CGaMRes(dat, K = 10, iterations = 3000, thpar = 10)
 CGaPloth(CG)
 PlotTheta(CG)
 CGaPred(CG)
@@ -654,13 +645,16 @@ Because of the way we built the model, we can compare against theoretical result
 \section{References}
 
 \begin{itemize}
+  \item{ \textsc{Freireich. E.J., et al.}, Estimation of Exponential Survival Probabilities with Concomitant Information, \textit{Biometrics}, {\bf 21}, pages: 826-838, 1965.}
   \item{ \textsc{Gehan, E.A.}, A generalized Wilcoxon test for comparing arbitrarily single-censored samples, \textit{Biometrika}, {\bf 52}, pages: 687-696, 1965.}
   \item{ \textsc{Hjort, N.L.}, Nonparametric Bayes estimators based on beta processes in models for life history data, \textit{Annals of Statistics}, {\bf 18}, p'ags: 1259-1294, 1990.}
-  \item{\textsc{Kaplan, E.L.} y \textsc{Meier, P.} Nonparametric estimation from incomplete observations, \textit{Journal of the American Statistical Association} {\bf 53}. 282, p'ags: 457-481, 1958.}    
+  \item{\textsc{Kaplan, E.L.} y \textsc{Meier, P.} Nonparametric estimation from incomplete observations, \textit{Journal of the American Statistical Association} {\bf 53}. 282, p'ags: 457-481, 1958.}
+    \item{\textsc{Klein. J.P.} y \textsc{Moeschberger, M.L.} Survival analysis: techniques for censored and truncated data, Springer Science \& Business Media, 2003.}
   \item{ \textsc{Nieto-Barajas, L.E.} \& \textsc{Walker, S.G.}, Markov beta and gamma processes for modelling hazard rates, \textit{Scandinavian Journal of Statistics} no. {\bf 29}, pages 413-424, 2002.}
   \item{ \textsc{Nieto-Barajas, L.E.}, Discrete time Markov gamma processes and time dependent covariates  in survival analysis, \textit{Bulletin of the International Statistical Institute 54th Session}, 2003.}
   \item{ \textsc{Tsuang, M.T. and Woolson}, R.F. Mortality in Patients with Schizophrenia, Mania and Depression, \textit{British Journal of Psychiatry}, {\bf 130}, pages 162-166, 1977.}
   \item{ \textsc{Walker, S.G.} y \textsc{Mallick, B.K.}, Hierarchical generalized linear models and frailty models with Bayesian nonparametric mixing, \textit{Journal of the Royal Statistical Society}, Series B {\bf 59}, p'ags: 845-860, 1997.}
+    \item{ \textsc{Woolson, R.F.}, Rank Tests and a One-Sample Log Rank Test for Comparing Observed Survival Data to a Standard Population, \textit{Biometrics}, {\bf 37}, pages: 687-696, 1981.}
 \end{itemize}
 
 \end{document}
