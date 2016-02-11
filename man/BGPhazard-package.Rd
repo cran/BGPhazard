@@ -15,8 +15,8 @@ and Walker (2002) and Nieto-Barajas (2003).}
   \tabular{ll}{
     Package: \tab BGPhazard\cr
     Type: \tab Package\cr
-    Version: \tab 1.2.2\cr
-    Date: \tab 2015-03-10\cr
+    Version: \tab 1.2.3\cr
+    Date: \tab 2016-02-11\cr
     License: \tab GPL version 2 or later\cr
   }
 }

@@ -1,2 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 import(survival)
+importFrom("graphics", "hist", "legend", "lines", "mtext", "par", 
+           "plot", "points", "segments")
+importFrom("stats", "acf", "density", "dnorm", "median", 
+           "quantile", "rbeta", "rgamma", "rnorm", "runif", 
+           "sd", "var")

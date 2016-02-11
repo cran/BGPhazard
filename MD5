@@ -1,5 +1,5 @@
-98b33ecdce29abaa6ae255ba6603b067 *DESCRIPTION
-76064e2718f31aed3e7ebfe71f3553cc *NAMESPACE
+17a4eb50048297a2451647139e385326 *DESCRIPTION
+f71fe2818b73b7add2ac0604bf45bf8b *NAMESPACE
 91ce72a90f96d35dd3b5de3fd5f491eb *R/BeMRes.R
 a0c08c3c40147ef66ed9a9b2112a35d8 *R/BeNM.R
 3ef09929bd0579daaee84b121fec3cb1 *R/BePlotDiag.R
@@ -31,14 +31,14 @@ ce1e838abfb97353ebb98321df2192a1 *R/GaUpdC.R
 cf5fdb74605f47e3012e2659741ba560 *R/PlotTheta.R
 871408a7d78aec7e879d2843f3949ac6 *R/UpdLambda.R
 68c9b9916545f7695c0fc7a9d403478a *R/UpdPi.R
-4d4d2db2c633985a61669aff54414d13 *build/vignette.rds
+59540f03083b08a79ef49f08970945a7 *build/vignette.rds
 5491e6741348cf075f5983706dded193 *data/gehan.rda
 23380947c93b187e86214e3e49f489de *data/leukemiaFZ.rda
 9df8f1245e5bc2287a38d028c40ce871 *data/psych.rda
 819c3f23ca37c161c140cee596d5d897 *inst/doc/BGPhazard.R
 ff63202b4c0e0c47530f78c525a0b079 *inst/doc/BGPhazard.Rnw
-355b32eff75ab21d7d40f98dce9d8826 *inst/doc/BGPhazard.pdf
-f422506e5b5b96093fb3c58967af3567 *man/BGPhazard-package.Rd
+31b83b61706c06596180f7622800dcf8 *inst/doc/BGPhazard.pdf
+077d79971009ef089a5af76ec55aa6f5 *man/BGPhazard-package.Rd
 94e8fababa7dcbca6896dc2834598dea *man/BeMRes.Rd
 a04640309347f5f16eb9b9458ddf3d74 *man/BeNM.Rd
 d33f8f2d822702abbffceee63a2951bc *man/BePlotDiag.Rd
