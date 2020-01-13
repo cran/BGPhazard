@@ -1,209 +1,287 @@
+#' Markov Gamma Model with Covariates
+#' 
+#' Posterior inference for the Bayesian non-parametric Markov gamma model with
+#' covariates in survival analysis.
+#' 
+#' Computes the Gibbs sampler with the full conditional distributions of
+#' Lambda and Theta (Nieto-Barajas, 2003) and arranges the resulting Markov
+#' chain into a matrix which can be used to obtain posterior summaries. Prior
+#' distributions for the re gression coefficients (Theta) are assumed independent normals
+#' with zero mean and variance \code{var.theta.ini}.
+#' 
+#' @param data Double tibble. Contains failure times in the first column,
+#' status indicator in the second, and, from the third to the last column, the
+#' covariate(s).
+#' @param type.t Integer. 1=computes uniformly-dense intervals; 2=length
+#' intervals defined by user and 3=same length intervals.
+#' @param length Integer. Interval length of the partition.
+#' @param K Integer. Partition length for the hazard function.
+#' @param alpha Nonnegative entry vector. Small entries are recommended in
+#' order to specify a non-informative prior distribution.
+#' @param beta Nonnegative entry vector. Small entries are recommended in order
+#' to specify a non-informative prior distribution.
+#' @param c.r Nonnegative vector. The higher the entries, the higher the correlation of 
+#' two consecutive intervals.
+#' @param c.nu Tuning parameter for the proposal distribution for c.
+#' @param var.theta.str Double. Variance of the proposal normal distribution
+#' for theta in the Metropolis-Hastings step.
+#' @param var.theta.ini Double. Variance of the prior normal distribution for theta.
+#' @param a.eps Double. Shape parameter for the prior gamma distribution of
+#' epsilon when \code{type.c = 4}.
+#' @param b.eps Double. Scale parameter for the prior gamma distribution of
+#' epsilon when \code{type.c = 4}.
+#' @param type.c 1=defines \code{c.r} as a zero-entry vector; 2=lets the user
+#' define \code{c.r} freely; 3=assigns \code{c.r} by computing an exponential
+#' prior distribution with mean 1; 4=assigns \code{c.r} an exponential hierarchical
+#' distribution with mean \code{epsilon} which in turn has a Ga(a.eps, b.eps)
+#' distribution.
+#' @param epsilon Double. Mean of the exponential distribution assigned to
+#' \code{c.r} when \code{type.c = 3}.
+#' @param iterations Integer. Number of iterations including the \code{burn.in}
+#' to be computed for the Markov chain.
+#' @param burn.in Integer. Length of the burn-in period for the Markov chain.
+#' @param thinning Integer. Factor by which the chain will be thinned. Thinning
+#' the Markov chain reduces autocorrelation.
+#' @param printtime Logical. If \code{TRUE}, prints out the execution time.
+#' @note It is recommended to verify chain's stationarity. This can be done by
+#' checking each element individually. See \link{CGaPlotDiag}
+#' To obtain posterior summaries of the coefficients use function
+#' \link{CGaPloth}.
+#' @seealso \link{CGaPlotDiag}, \link{CGaPloth}
+#' @references - Nieto-Barajas, L. E. (2003). Discrete time Markov gamma
+#' processes and time dependent covariates in survival analysis. \emph{Bulletin
+#' of the International Statistical Institute 54th Session}. Berlin. (CD-ROM).
+#' 
+#' - Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma
+#' processes for modelling hazard rates. \emph{Scandinavian Journal of
+#' Statistics} \strong{29}: 413-424.
+#' @examples
+#' 
+#' 
+#' 
+#' ## Simulations may be time intensive. Be patient.
+#' 
+#' ## Example 1
+#' #  data(leukemiaFZ)
+#' #  leukemia1 <- leukemiaFZ
+#' #  leukemia1$wbc <- log(leukemiaFZ$wbc)
+#' #  CGEX1 <- CGaMRes(data = leukemia1, K = 10, iterations = 100, thinning = 1)
+#' 
+#' ## Example 2. Refer to "Cox-gamma model example" section in package vignette for details.
+#' # SampWeibull <- function(n, a = 10, b = 1, beta = c(1, 1)) {
+#' #   M <- tibble(i = seq(n), x_i1 = runif(n), x_i2 = runif(n), 
+#' #               t_i = rweibull(n, shape = b, 
+#' #                                 scale = 1 / (a * exp(x_i1*beta[1] + x_i2*beta[2]))),
+#' #               c_i = rexp(n), delta = t_i > c_i,
+#' #               `min{c_i, d_i}` = min(t_i, c_i))
+#' #   return(M)
+#' # }
+#' #  dat <- SampWeibull(100, 0.1, 1, c(1, 1))
+#' #  dat <- dat %>% select(4,6,2,3) 
+#' #  CG <- CGaMRes(data = leukemia1, K = 10, iterations = 100, thinning = 1)
+#' #  CGaPloth(CG)
+#' 
+#' 
+#' 
+#' @export CGaMRes
 CGaMRes <-
-function(data, type.t = 1, K = 5, alpha = rep(0.001, K.aux),
-                    beta = rep(0.0001, K.aux), c.r = rep(0, K.aux - 1), 
-                    type.c = 4, epsilon = 1, iterations = 1000, 
-                    burn.in = floor(iterations * 0.2), thinning = TRUE,
-                    thpar = 3, printtime = TRUE) {
-  tInit <- proc.time()
-  times <- data[, 1]
-  delta <- data[, 2]
-  covar <- as.matrix(data[, -c(1, 2)])
-  if(mean(covar) == "NaN") {
-    stop("'data' must contain at least one explanatory variable.")
-  }
-  if (min(times) < 0) {
-    stop ("Invalid argument: 'times' must be a nonnegative vector.")
-  }
-  if (min((delta  ==  0) + (delta  ==  1 )) == 0) {
-    stop ("Invalid argument: 'delta' must have 0 - 1 entries.")
-  }
-  if (length(times) != length(delta)) {
-    stop ("Invalid argument: 'times' and 'delta' must have same length.")
-  }
-  if (type.t == 2) {
-    K.aux <- ceiling(max(times))
-    if (K != K.aux) {
-      warning (c("type.t = 2 requires K=", K.aux, ". K(", K, ") fixed at ", 
-                 K.aux, "."))
+  function(data, type.t = 2, length = 1, K = 5, alpha = rep(0.01, K),
+           beta = rep(0.01, K), c.r = rep(1, K - 1), c.nu = 1, 
+           var.theta.str = 25, var.theta.ini = 100,
+           a.eps = 0.1, b.eps = 0.1, 
+           type.c = 4, epsilon = 1, iterations = 1000, 
+           burn.in = floor(iterations * 0.2), thinning = 3, printtime = TRUE) {
+    tInit <- proc.time()
+    data <- tibble::as_tibble(data)
+    print(sprintf("Using %s as times and %s as delta, status indicator. The other variables are used as covariables",names(data)[1], names(data)[2]))
+    times <- as.numeric(dplyr::pull(data, 1))
+    delta <- as.numeric(dplyr::pull(data, 2))
+    covar <- dplyr::select(data, -c(1, 2))
+    
+    covar2 <- covar
+    
+    median.obs <- purrr::map_df(covar, ~quantile(x = .x, probs = .5))
+    
+    k.const <- as.numeric(covar %>% dplyr::summarise_all(.funs = ~max(abs(.x))))
+    covar %<>% purrr::modify2(.y = k.const, .f = ~.x/.y)
+    
+    covar <- as.matrix(covar)
+    if (min(times) < 0) {
+      stop ("Invalid argument: 'times' must be a nonnegative vector.")
+    }
+    if (min((delta  ==  0) + (delta  ==  1 )) == 0) {
+      stop ("Invalid argument: 'delta' must have 0 - 1 entries.")
+    }
+    if (length(times) != length(delta)) {
+      stop ("Invalid argument: 'times' and 'delta' must have same length.")
+    }
+    if (type.t == 2) {
+      m <- ceiling(max(times))
+      if (length > m) {
+        stop (c("type.t = 2 requires length <=", m))
+      }
+      K <- ceiling(ceiling(max(times))/length)
+    }
+    
+    if (type.t == 1 || type.t == 3) {
+      if (class(try(K != 0, TRUE)) == "try-error") {
+        K.aux <- 5
+        warning ("'K' value not specified. 'K' fixed at ", K.aux, ".")
+      } else {K.aux <- K}
       K <- K.aux
     }
-  }
-  if (type.t == 1 || type.t == 3) {
-    if (class(try(K != 0, TRUE)) == "try-error") {
-      K.aux <- 5
-      warning ("'K' value not specified. 'K' fixed at ", K.aux, ".")
-    } else {K.aux <- K}
-    K <- K.aux
-  }
-  tol <- .Machine$double.eps ^ 0.5
-  if (abs(type.t - round(type.t)) > tol || type.t < 1 || type.t > 3) {
-    stop ("Invalid argument: 'type.t' must be an integer between 1 and 3.")
-  }
-  if (K <= 2 || abs(K - round(K)) > tol) {
-    stop ("Invalid argument: 'K' must be an integer greater than 2.")
-  }
-  if (length(alpha) != K || length(beta) != K) {
-    stop (c("Invalid argument: 'alpha', 'beta', must have length "), K, 
-          (". Note that, if type.t = 2 is selected, 'K' will be redefined as 
-           ceiling(max(times))."))
-  }
-  if (min(c(alpha, beta)) < 0) {
-    stop ("Invalid argument: 'alpha' and 'beta' must have nonnegative entries.")
-  } 
-  if (abs(type.c - round(type.c)) > tol || type.c < 1 || type.c > 4) {
-    stop ("Invalid argument: 'type.c' must be an integer between 1 and 4.")
-  }
-  if (type.c == 1 || type.c == 2) {
-    if (length(c.r) != (K - 1)) {
-      stop (c("Invalid argument: 'c.r' must have length, ", K - 1, ". Note that,
-              if type.t = 2, 'K' is redefined as ceiling(max(times)) = ", K,
-              "."))
+    tol <- .Machine$double.eps ^ 0.5
+    if (abs(type.t - round(type.t)) > tol || type.t < 1 || type.t > 3) {
+      stop ("Invalid argument: 'type.t' must be an integer between 1 and 3.")
     }
-    for(k in 1:(K - 1)) {
-      if (abs(c.r[k] - round(c.r[k])) > tol || min(c.r) < 0) {
+    if (K <= 2 || abs(K - round(K)) > tol) {
+      stop ("Invalid argument: 'K' must be an integer greater than 2.")
+    }
+    if (length(alpha) != K || length(beta) != K) {
+      stop (c("Invalid argument: 'alpha', 'beta', must have length "), K)
+    }
+    if (min(c(alpha, beta)) < 0) {
+      stop ("Invalid argument: 'alpha' and 'beta' must have nonnegative entries.")
+    } 
+    if (abs(type.c - round(type.c)) > tol || type.c < 1 || type.c > 4) {
+      stop ("Invalid argument: 'type.c' must be an integer between 1 and 4.")
+    }
+    if (type.c == 1 || type.c == 2) {
+      if (length(c.r) != (K - 1)) {
+        stop (c("Invalid argument: 'c.r' must have length, "), K - 1)
+      }
+      if (sum(abs(c.r - round(c.r)) > tol) != 0 || min(c.r) < 0) {
         stop ("Invalid argument: 'c.r' entries must be nonnegative integers.")
       }
     }
-  }
-  if (type.c == 1 && sum(abs(c.r)) != 0 ) {
-    c.r <- rep(0, K - 1)
-    warning (c("'c.r' redefined as rep(0,", K - 1, ") because type.c = 1."))
-  }
-  if ((type.c == 3 || type.c == 4) && epsilon < 0) {
-    stop ("Invalid argument: 'epsilon' must be nonnegative.")
-  }
-  if (iterations <= 0 || abs(iterations - round(iterations)) > tol 
-      || iterations < 50) {
-    stop ("Invalid argument: 'iterations' must be an integer greater than 50.")
-  }
-  if (burn.in <= 0 || abs(burn.in - round(burn.in)) > tol 
-      || burn.in > iterations*0.9) {
-    stop ("Invalid argument: 'burn.in' must be a postitive integer smaller than 
-          iterations = ", iterations * 0.9, ".")
-  }
-  if (thinning != TRUE && thinning != FALSE) {
-    stop ("Invalid argument: 'thinning' must be a logical value.")
-  }
-  if (thpar <= 0 || abs(thpar - round(thpar)) > tol 
-      || thpar > 0.1 * iterations) {
-    stop ("Invalid argument: 'thpar' must be a postitive integer smaller than 
-          iterations * 0.10 = ", iterations * 0.1, ".")
-  }
-  if (printtime != TRUE && printtime != FALSE) {
-    stop ("Invalid argument: 'printtime' must be a logical value.")
-  }
-  tao <- GaTao(times, delta, type.t, K)
-  n <- CGaN(times, delta, type.t, K, covar)
-  t.unc <- sort(times[delta==1])
-  if (thinning == TRUE) {
-    cols <- floor((iterations - burn.in) / thpar) + 1
-  } else {
-    cols <- iterations
-  }
-  a <- 0
-  if (type.c == 3) {
-    c.r <- rep(5, (K - 1))
-  }
-  if (type.c == 4) {
-    a <- 1
-  }  
-  cat(paste("Iterating...", "\n"), sep = "")
-  p <- length(covar[1, ])
-  theta <- rep(1, p)
-  X <- matrix(NA, nrow = (3 * K - 2 + a + p), ncol = cols)
-  lambda.r <- rep(0.1, K)
-  for(j in 1:iterations) {
-    if (floor(j / 200) == ceiling(j / 200)) {
-      cat(c("Iteration ", j, " of ", iterations, ".", "\n"), sep = "")
+    if (type.c == 1 && sum(abs(c.r)) != 0 ) {
+      c.r <- rep(0, K - 1)
+      warning (c("'c.r' redefined as rep(0,", K - 1, ") because type.c = 1."))
     }
-    u.r <- GaUpdU(alpha, beta, c.r, lambda.r)
-    m <- CGaM(times, delta, type.t, K, covar, theta)
-    lambda.r <- UpdLambda(alpha, beta, c.r, u.r, n, m)
-    theta <- CUpdTheta(theta, lambda.r, times, delta, type.t, K, covar)
-    if (type.c == 3 || type.c == 4) {
-      if (type.c == 4) {
-        epsilon <- rgamma(1, shape = 0.01 + K, scale = 1 / (0.01 + sum(c.r)))
-      }
-      c.r <- GaUpdC(alpha, beta, c.r, lambda.r, u.r, epsilon)
+    if ((type.c == 3 || type.c == 4) && epsilon < 0) {
+      stop ("Invalid argument: 'epsilon' must be nonnegative.")
     }
-    if (thinning == FALSE) {
-      for(k in 1:K) {
-        X[k, j] <- lambda.r[k]
-      }
-      for(k in (K + 1):(2 * K - 1)) {
-        X[k, j] <- u.r[k - K]
-      }
-      for(k in (2 * K):(3 * K - 2)) {
-        X[k, j] <- c.r[k - 2 * K + 1]
-      }
-      if(type.c == 4){
-        if (thinning == FALSE) {
-          X[3 * K - 1, j] <- epsilon
-        }
-      }
-      for(k in (3 * K - 1 + a):(3 * K - 2 + a + p)) {
-        X[k, j] <- theta[k - 3 * K + 1 - a + 1]
-      }      
+    if (iterations <= 0 || abs(iterations - round(iterations)) > tol 
+        || iterations < 50) {
+      stop ("Invalid argument: 'iterations' must be an integer greater than 50.")
     }
-    if (thinning == TRUE && j >= burn.in) {
-      if (floor((j - burn.in) / thpar) == (j - burn.in) / thpar) {
-        for(k in 1:K) {
-          X[k, (j - burn.in) / thpar + 1] <- lambda.r[k]
-        }
-        for(k in (K + 1):(2 * K - 1)) {
-          X[k, (j - burn.in) / thpar + 1] <- u.r[k - K]
-        }
-        for(k in (2 * K):(3 * K - 2)) {
-          X[k, (j - burn.in) / thpar + 1] <- c.r[k - 2 * K + 1]
-        }
+    if (burn.in < 0 || abs(burn.in - round(burn.in)) > tol 
+        || burn.in > iterations*0.9) {
+      stop ("Invalid argument: 'burn.in' must be a postitive integer smaller than 
+            iterations = ", iterations * 0.9, ".")
+    }
+    if (class(thinning) != "numeric") {
+      stop ("Invalid argument: 'thinning' must be a numeric value.")
+    }
+    if (thinning <= 0 || abs(thinning - round(thinning)) > tol 
+        || thinning > 0.1 * iterations) {
+      stop ("Invalid argument: 'thinning' must be a postitive integer smaller than 
+            iterations * 0.10 = ", iterations * 0.1, ".")
+    }
+    if (printtime != TRUE && printtime != FALSE) {
+      stop ("Invalid argument: 'printtime' must be a logical value.")
+    }
+    tao <- Tao(times, delta, type.t, K, length)
+    t.unc <- sort(times[delta==1])
+    n <- readr::parse_integer(as.character(table(cut(t.unc,tao))))
+    if (type.c == 3) {
+      c.r <- rep(5, (K - 1))
+    }
+    if (type.c == 4) {
+      Epsilon <- rep(NA, iterations)
+    }  
+    p <- ncol(covar)
+    acceptance.th <- rep(0,p)
+    acceptance.c <- 0
+    Theta <- matrix(NA, nrow = iterations, ncol = p)
+    Lambda <- matrix(NA, nrow = iterations, ncol = K)
+    U <- matrix(NA, nrow = iterations, ncol = K - 1)
+    C <- matrix(NA, nrow = iterations, ncol = K - 1)
+    lambda.r <- rep(0.1, K)
+    theta <- rep(1, p)
+    cat(paste("Iterating...", "\n"), sep = "")
+    pb <- dplyr::progress_estimated(iterations)
+    covar <- as.matrix(covar)
+    for(j in seq_len(iterations)) {
+      pb$tick()$print()
+      u.r <- UpdU(alpha, beta, c.r, lambda.r)
+      m <- CGaM(times, tao, K, covar, theta)
+      lambda.r <- UpdLambda(alpha, beta, c.r, u.r, n, m)
+      aux.th <- CUpdTheta(theta, m, lambda.r, times, delta, K, covar, tao, var.theta.str, var.theta.ini, acceptance.th)
+      theta <- aux.th[[1]]
+      acceptance.th <- aux.th[[2]]
+      if (type.c == 3 || type.c == 4) {
         if (type.c == 4) {
-          X[3 * K - 1, (j - burn.in) / thpar + 1] <- epsilon
+          epsilon <- rgamma(1, shape = a.eps + K, scale = 1 / (b.eps + sum(c.r)))
         }
-        for(k in (3 * K - 1 + a):(3 * K - 2 + a + p)) {
-          X[k, (j - burn.in) / thpar + 1] <- theta[k - 3 * K + 1 - a + 1]
-        }
+        auxc.r <- GaUpdC(alpha, beta, c.r, lambda.r, u.r, epsilon, c.nu, acceptance.c)
+        c.r <- auxc.r[[1]]
+        acceptance.c <- auxc.r[[2]]
       }
+      Lambda[j, ] <- lambda.r
+      U[j, ] <- u.r
+      C[j, ] <- c.r
+      if (type.c == 4) Epsilon[j] <- epsilon
+      Theta[j, ] <- theta
     }
-  }
-  cat(c("Done.", "\n", "Generating survival and cumulative hazard function estimates... 0%", "\n"), sep = "")
-  iterations <- dim(X)[2]
-  S <- matrix(1, ncol = iterations + 1, nrow = 101)
-  H <- matrix(0, ncol = iterations + 1, nrow = 101)
-  for(i in 0:100) {
-    S[i + 1, 1] <- H[i + 1, 1] <- max(tao) * i / 100    
-  }
-  prog <- 0
-  prog.by <- 1/5
-  for(it in 1:iterations) {
-    if (it/iterations - prog >= prog.by) {
-      prog <- prog + prog.by
-      cat(c("Generating survival and cumulative hazard function estimates... ", prog * 100, "%", "\n"), sep = "")
+    Lambda <- Lambda[seq(burn.in + 1, iterations, thinning), ]
+    U <- U[seq(burn.in + 1, iterations, thinning), ]
+    C <- C[seq(burn.in + 1, iterations, thinning), ]
+    if (type.c == 4) Epsilon <- Epsilon[seq(burn.in + 1, iterations, thinning)]
+    Theta <- Theta[seq(burn.in + 1, iterations, thinning), ]
+    Theta <- sweep(Theta, MARGIN=2,k.const, `/`)
+    
+    
+    
+    rows <- nrow(Lambda)
+    aux.median.obs <- as.numeric(median.obs)
+    
+    Lambda.median.obs <- tibble::as_tibble(Lambda)
+    eff <- as.numeric(exp(Theta%*%aux.median.obs))
+    Lambda.median.obs <- dplyr::mutate_all(Lambda.median.obs,.f = ~.x*eff)
+    
+    ss <- max(tao) * seq.int(0,100) / 100
+    X <- as.matrix(unname(Lambda))
+    
+    writeLines(c("","Done.","Generating baseline survival function estimates."))
+    pb <- dplyr::progress_estimated(length(ss))
+    S <-  purrr::map(ss, function(s = .x){
+      pb$tick()$print()
+      do.call(base::c,purrr::map(seq_len(rows),.f= ~exp(-sum((s > tao[-1]) * tao[-1] * X[.x,] + 
+                                               (s > tao[-length(tao)] & s <= tao[-1]) * s * X[.x,] -
+                                               (s > tao[-length(tao)]) * tao[-(length(tao))] * X[.x,])
+      )))
+    })
+    
+    X.median.obs <- as.matrix(unname(Lambda.median.obs))
+    writeLines(c("","Done.","Generating survival function estimates of the median observation."))
+    pb <- dplyr::progress_estimated(length(ss))
+    S.median.obs <-  purrr::map(ss, function(s = .x){
+      pb$tick()$print()
+      do.call(base::c,purrr::map(seq_len(rows),.f= ~exp(-sum((s > tao[-1]) * tao[-1] * X.median.obs[.x,] + 
+                                                        (s > tao[-length(tao)] & s <= tao[-1]) * s * X.median.obs[.x,] -
+                                                        (s > tao[-length(tao)]) * tao[-(length(tao))] * X.median.obs[.x,])
+      )))
+    })
+    # H[2:rows, 2:101] <- -log(S[2:rows, 2:101])
+    S <- purrr::map(.x = 1, ~S)
+    S.median.obs <- purrr::map(.x = 1, ~S.median.obs)
+    Lambda <- purrr::map(.x = 1, ~tibble::as_tibble(Lambda))
+    Lambda.median.obs <- purrr::map(.x = 1, ~Lambda.median.obs) 
+    cat(paste("Done.", "\n"), sep = "")
+    if (printtime) {
+      cat(">>> Total processing time (sec.):\n")
+      print(procTime <- proc.time() - tInit)
     }
-    for(i in 2:101) {
-      aux <- 0
-      aux2 <- 1
-      k <- 1
-      while(aux2 == 1) {
-        if (tao[k + 1] < S[i, 1]) {
-          aux <- aux + (tao[k + 1] - tao[k]) * X[k, it]
-        }
-        if (tao[k] < S[i, 1] && S[i, 1] <= tao[k + 1]) {
-          aux <- aux + (S[i, 1] - tao[k]) * X[k, it]
-          aux2 <- 0
-        }
-        k <- k + 1
-      }
-      H[i, it + 1] <- aux
-      S[i, it + 1] <- exp(-aux)
-    }
+    if(type.c == 4) {
+      X = tibble::enframe(list(Lambda = Lambda, Lambda.m = Lambda.median.obs, 
+                       U = U, C = C, Epsilon = Epsilon, Theta = Theta)) } else { 
+                         X = tibble::enframe(list(Lambda = Lambda, Lambda.m = Lambda.median.obs, U = U, C = C, Theta = Theta))
+                       }
+    out <- tibble::enframe(list(times = times, delta = delta, data = covar2, type.t = type.t, 
+                        tao = tao, K = K, t.unc = t.unc, iterations = rows, burn.in = burn.in, thinning = thinning, 
+                        acceptance = tibble::enframe(list(a.th = acceptance.th/iterations, a.c = acceptance.c/((K-1)*iterations))),
+                        simulations = X, p = p, s = ss, S = S, S.m = S.median.obs
+                        ))
+    return(out)
   }
-  cat(paste("Done.", "\n"), sep = "")
-  if (printtime) {
-    cat(">>> Total processing time (sec.):\n")
-    print(procTime <- proc.time() - tInit)
-  }
-  out <- list(times = times, delta = delta, covar = covar, type.t = type.t, 
-              tao = tao, K = K, t.unc = t.unc, iterations = iterations, 
-              summary = X, S = S, H = H, p = p)
-  return(out)
-}

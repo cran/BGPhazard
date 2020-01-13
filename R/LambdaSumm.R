@@ -1,30 +1,33 @@
 LambdaSumm <-
-function(M, confidence = 0.95) {
-  if (confidence <= 0 || confidence >= 1) {
-    stop ("Invalid parameter: confidence must be between 0 and 1.")
+  function(M, confidence = 0.95) {
+    if (confidence <= 0 || confidence >= 1) {
+      stop ("Invalid parameter: confidence must be between 0 and 1.")
+    }
+    v <- list("K",
+              "iterations",
+              "s",
+              "S",
+              c("simulations","Lambda")
+    ) %>% purrr::map(~extract(M,.x)) %>% rlang::set_names(c("K","iterations","s","S","Lambda"))
+    K <- v$K
+    iterations <- v$iterations
+    pr <- (1 - confidence) / 2
+    S <- v$S
+    
+    SUM.h <- tibble::tibble(a=seq_len(K),
+                    b=v$Lambda %>% tibble::as_tibble() %>% purrr::map_dbl(mean),
+                    c=v$Lambda %>% tibble::as_tibble() %>% purrr::map_dbl(quantile, probs = pr),
+                    d=v$Lambda %>% tibble::as_tibble() %>% purrr::map_dbl(quantile, probs = 0.5),
+                    e=v$Lambda %>% tibble::as_tibble() %>% purrr::map_dbl(quantile, probs = 1 - pr)
+    ) %>% rlang::set_names(c("k", "mean",  "lower", "median", "upper"))
+    
+    
+    SUM.S <- tibble::tibble(a=v$s,
+                    b=v$S %>% purrr::map_dbl(mean),
+                    c=v$S %>% purrr::map_dbl(quantile, probs = pr), 
+                    d=v$S %>% purrr::map_dbl(quantile, probs = 0.5), 
+                    e=v$S %>% purrr::map_dbl(quantile, probs = 1-pr)) %>%
+      rlang::set_names(c("t", "S^(t)",  "lower", "median", "upper"))
+
+    out <- list(SUM.h = SUM.h, SUM.S = SUM.S) %>% tibble::enframe()
   }
-  K <- M$K
-  tao <- M$tao
-  iterations <- dim(M$summary)[2]
-  pr <- (1 - confidence) / 2
-  SUM.h <- matrix(0, ncol = 5, nrow = K)
-  S <- M$S
-  SUM.S <- matrix(0, ncol = 5, nrow = 101)
-  for(k in 1:K) {
-    SUM.h[k, 1] <- k
-    SUM.h[k, 2] <- mean(M$summary[k, ])
-    SUM.h[k, 3] <- quantile(M$summary[k, ], probs = pr)
-    SUM.h[k, 4] <- quantile(M$summary[k, ], probs = 0.5)
-    SUM.h[k, 5] <- quantile(M$summary[k, ], probs = 1 - pr)
-  }
-  colnames(SUM.h) <- c("k", "mean(lambda)",  pr, 0.50, 1 - pr)
-  for(i in 1:101) {
-    SUM.S[i, 1] <- S[i, 1]
-    SUM.S[i, 2] <- mean(S[i, 2:iterations])
-    SUM.S[i, 3] <- quantile(S[i, 2:iterations], probs = pr)
-    SUM.S[i, 4] <- quantile(S[i, 2:iterations], probs = 0.5)
-    SUM.S[i, 5] <- quantile(S[i, 2:iterations], probs = 1 - pr)
-  }
-  colnames(SUM.S) <- c("t", "S^(t)",  pr, 0.50, 1 - pr)
-  out <- list(SUM.h = SUM.h, SUM.S = SUM.S)
-}

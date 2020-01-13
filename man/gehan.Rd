@@ -34,8 +34,7 @@ Freireich, E. J., et al. (1963). The effect of 6-mercaptopurine on the duration 
 #  timesG <- gehan$time[gehan$treat == "6-MP"]
 #  deltaG <- gehan$cens[gehan$treat == "6-MP"]
 #  GEX1 <- GaMRes(timesG, deltaG, K = 8, iterations = 3000)
-#  GaPloth(GEX1, confint = FALSE)
-#  GaPloth(GEX1, fun = "both", confint = TRUE)
+#  GaPloth(GEX1)
 }
 
 \keyword{datasets}

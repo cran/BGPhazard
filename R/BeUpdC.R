@@ -1,11 +1,20 @@
 BeUpdC <-
-function(alpha, beta, Pi.r, u.r, epsilon) {
-  f.cmat <- BePrC(alpha, beta, Pi.r, u.r, epsilon)
-  K <- length(Pi.r)
-  c.r <- rep(0, K - 1)
-  ck <- 50
-  for(k in 1:(K - 1)) {
-    c.r[k] <- sample(x = u.r[k]:(u.r[k] + ck), size = 1, prob = f.cmat[, k])
+  function(alpha, beta, Pi.r, u.r, epsilon) {
+    ck <- 50
+    K <- length(Pi.r)
+    c.r <- purrr::map_int(seq_len(K-1),function(index = .x){
+      id <- seq.int(u.r[index], u.r[index] + ck)
+      probs <- (lgamma(alpha[index + 1] + beta[index + 1] + id) 
+        - lgamma(beta[index + 1] + id - u.r[index]) - lgamma(id - u.r[index] + 1)) +
+        id * (log(epsilon) + log(1 - Pi.r[index]) 
+              + log(1 - Pi.r[index + 1]))
+      probs <- exp(probs)
+      sample(x = id, size = 1, prob = probs)
+    }) 
+    return(c.r)
   }
-  return(c.r)
-}
+
+
+
+
+

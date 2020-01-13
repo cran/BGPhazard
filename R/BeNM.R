@@ -1,21 +1,11 @@
 BeNM <-
-function(times, delta) {
-  tao <- BeTao(times)
-  K <- max(times)
-  t.unc <- sort(times[delta == 1])
-  n <- rep(0,  K)
-  for(j in 1:length(t.unc)) {
-    k <- 1
-    while (tao[k] != t.unc[j]) {
-      k <- k + 1
-    }
-    n[k] <- n[k] + 1
+  function(times, delta) {
+    K <- max(times)
+    tao <- seq(0, K)
+    t.unc <- sort(times[delta == 1])
+    n <- cut(t.unc,tao) %>% table %>% as.character %>% readr::parse_integer()
+    m <- tao[-1] %>% purrr::map_int(~length(times[times > .x]))
+    out <- list(n = n, m = m, tao = tao, K = K, t.unc = t.unc)
+    out
   }
-  m <- rep(0,  K)
-  for(k in 1:K) {
-    m[k] <- length(times[times > tao[k]])
-  }
-  m[K] <- 0
-  out <- list(n = n, m = m, tao = tao, K = K, t.unc = t.unc)
-  out
-}
+

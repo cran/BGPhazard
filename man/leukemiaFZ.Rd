@@ -34,8 +34,7 @@ Feigl, P. and Zelen, M. (1965). Estimation of Exponential Survival Probabilities
 #  data(leukemiaFZ)
 #  leukemia1 <- leukemiaFZ
 #  leukemia1$wbc <- log(leukemiaFZ$wbc)
-#  CGEX1 <- CGaMRes(data = leukemia1, K = 10, iterations = 10000, thpar = 10)
-#  CGaPloth(CGEX1, fun = "both", confint = TRUE)
+#  CGEX1 <- CGaMRes(data = leukemia1, K = 10, iterations = 100, thinning = 1)
 }
 
 \keyword{datasets}

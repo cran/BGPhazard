@@ -1,4 +1,5 @@
 ### R code from vignette source 'BGPhazard.Rnw'
+### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: BGPhazard.Rnw:235-238 (eval = FALSE)

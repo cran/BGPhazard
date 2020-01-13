@@ -1,20 +1,15 @@
 UpdPi <-
-function(alpha, beta, c.r, u.r, n, m) {
-  K <- length(alpha)
-  Pi.r <- rep(0, K)
-  Pi.r[1] <- rbeta(1, shape1 = alpha[1] + u.r[1] + n[1], 
-                   shape2 = beta[1] + c.r[1] - u.r[1] + m[1])
-  for(k in 2:(K - 1)) {
-    a <- alpha[k] + u.r[k - 1] + u.r[k] + n[k]
-    b <- beta[k] + c.r[k - 1] - u.r[k - 1] + c.r[k] - u.r[k] + m[k]
-    if (a > 0 && b > 0) {
-      Pi.r[k] <- rbeta(1, shape1 = a, shape2 = b)
-    }
+  function(alpha, beta, c.r, u.r, n, m) {
+    K <- length(alpha)
+    a <- c(alpha[1] + u.r[1] + n[1],
+           alpha[seq_len(K-2) + 1] + u.r[seq_len(K-2)] + u.r[seq_len(K-2) + 1] + n[seq_len(K-2) + 1],
+           alpha[K] + u.r[K - 1] + n[K])
+    
+    b <- c(beta[1] + c.r[1] - u.r[1] + m[1],
+           beta[seq_len(K-2) + 1] + c.r[seq_len(K-2)] - u.r[seq_len(K-2)] + c.r[seq_len(K-2) + 1] - u.r[seq_len(K-2) + 1] + m[seq_len(K-2) + 1],
+           beta[K] + c.r[K - 1] - u.r[K - 1] + m[K])
+    Pi.r <- purrr::map_dbl(rbeta(K,shape1 = a, shape2 = b),~min(max(0.001, .x), 0.999))
+    return(Pi.r)
   }
-  Pi.r[K] <- rbeta(1, shape1 = alpha[K] + u.r[K - 1] + n[K], 
-                   shape2 = beta[K] + c.r[K - 1] - u.r[K - 1] + m[K])
-  for (k in 1:K) {
-    Pi.r[k] <- min(max(0.001, Pi.r[k]), 0.999)
-  }
-  return(Pi.r)
-}
+
+

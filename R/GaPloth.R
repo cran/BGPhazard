@@ -1,143 +1,140 @@
+#' Plots for the Hazard and Survival Function Estimates
+#' 
+#' Plots the hazard function and with the survival function
+#' estimates defined by the Markov gamma process with and without covariates
+#' (Nieto-Barajas & Walker, 2002).
+#' 
+#' This function returns estimators plots for the resulting hazard rate as it is computed
+#' by \link{GaMRes} and \link{CGaMRes} and the Nelson-Aalen
+#' estimate along with their confidence intervals for the data set given.
+#' Additionally, it plots the survival function and the Kaplan-Meier estimate
+#' with their corresponding credible/confidence intervals.
+#' 
+#' @param M tibble. Contains the output by \code{CGaMRres} and \code{GaMRes}.
+#' @param type.h character. "segment"= use segments to plot hazard rates,
+#' "line" = link hazard rates by a line
+#' @param addSurvival Logical. If \code{TRUE}, Nelson-Aalen estimate is plotted
+#' over the hazard function and Kaplan-Meier estimate is plotted over the
+#' survival function.
+#' @param confidence Numeric. Confidence level.
+#' @param summary Logical. If \code{TRUE}, a summary for hazard and survival
+#' functions is returned as a tibble.
+#' @return \item{SUM.h}{Numeric tibble. Summary for the mean, median, and a
+#' \code{confint / 100} confidence interval for each segment of the hazard
+#' function. If \code{summary = TRUE}} \item{SUM.S}{Numeric tibble. Summary for
+#' the mean, median, and a \code{confint / 100} confidence interval for a grid
+#' of the survival function. If \code{summary = TRUE}}
+#' @seealso \link{GaMRes}, \link{CGaMRes}, \link{CGaPlotDiag},
+#' \link{GaPlotDiag}
+#' @references - Nieto-Barajas, L. E. (2003). Discrete time Markov gamma
+#' processes and time dependent covariates in survival analysis. \emph{Bulletin
+#' of the International Statistical Institute 54th Session}. Berlin. (CD-ROM).
+#' 
+#' - Nieto-Barajas, L. E. & Walker, S. G. (2002). Markov beta and gamma
+#' processes for modelling hazard rates. \emph{Scandinavian Journal of
+#' Statistics} \strong{29}: 413-424.
+#' @examples
+#' 
+#' 
+#' 
+#' ## Simulations may be time intensive. Be patient.
+#' 
+#' ## Example 1
+#' #  data(gehan)
+#' #  timesG <- gehan$time[gehan$treat == "6-MP"]
+#' #  deltaG <- gehan$cens[gehan$treat == "6-MP"]
+#' #  GEX1 <- GaMRes(timesG, deltaG, K = 8, iterations = 3000)
+#' #  GaPloth(GEX1)
+#' 
+#' 
+#' ## Example 2
+#' #  data(leukemiaFZ)
+#' #  timesFZ <- leukemiaFZ$time
+#' #  deltaFZ <- leukemiaFZ$delta
+#' #  GEX2 <- GaMRes(timesFZ, deltaFZ, type.c = 4)
+#' #  GaPloth(GEX2)
+#' 
+#' 
+#' 
+#' 
+#' 
+#' @export GaPloth
 GaPloth <-
-function(M, fun = "both", confint = TRUE, h.NA = TRUE, KM = TRUE, 
-                    confidence = 0.95, summary = FALSE, legend = TRUE) {
-  SUM <- LambdaSumm(M, confidence)
-  SUM.h <- SUM$SUM.h
-  SUM.S <- SUM$SUM.S
-  tao <- M$tao
-  K <- M$K
-  if (h.NA == TRUE || KM == TRUE) {
-    #require(survival)
-    fit <- survfit(Surv(time = M$times, event = M$delta)~1, 
-                   conf.int = confidence)
-  }
-  if (fun == "h" || fun == "both") {
-    d <-0
-    if (h.NA == TRUE || KM == TRUE) {
-      h.est <- fit$n.event / fit$n.risk
-      if (confint == TRUE) {
-        d <- 3
+  function(M, type.h = "segment", addSurvival = T, 
+           confidence = 0.95, summary = FALSE) {
+    SUM <- LambdaSumm(M, confidence)
+    s <- SUM %>% tibble::deframe()
+    v <- list("tao",
+              "K",
+              "times",
+              "delta"
+    ) %>% purrr::map(~extract(M,.x)) %>% rlang::set_names(c("tao","K","times","delta"))
+    tao <- v$tao
+    K <- v$K
+    delta <- v$delta
+    times <- v$times
+    
+    if(type.h == "segment") h <- s$SUM.h %>% ggplot2::ggplot() + 
+      ggplot2::geom_segment(ggplot2::aes(x = tao[-(K+1)], xend = tao[-1], 
+                       y = mean, yend = mean, color = "Hazard Function")) + 
+      ggplot2::scale_color_manual(values = c("black"), limits = "Hazard Function") +
+      ggplot2::guides(color = ggplot2::guide_legend(title = "")) +
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = lower, ymax = upper, x = (tao[-(K+1)] + tao[-1])/2, width = tao[-1]-tao[-(K+1)]), 
+                    alpha = 0.5, color = "gray50") + 
+      ggplot2::xlab("Time") +ggplot2::ylab("Hazard rate") + ggplot2::scale_alpha_continuous(guide = F) + 
+      ggplot2::ggtitle(paste0("Estimate of hazard rates with intervals at ",confidence * 100,"% of credibility")) +
+      ggthemes::theme_tufte() +
+      ggplot2::theme(axis.line = ggplot2::element_line(colour = "black"),
+            legend.position="bottom")
+    
+    if(type.h == "line") h <- s$SUM.h %>% ggplot2::ggplot() + 
+      ggplot2::geom_line(ggplot2::aes(x = (tao[-(K+1)] + tao[-1])/2, y = mean, color = "Hazard Function")) +
+      ggplot2::scale_color_manual(values = c("black"), limits = "Hazard Function") +
+      ggplot2::guides(color = ggplot2::guide_legend(title = "")) +
+      ggplot2::geom_ribbon(ggplot2::aes(x = (tao[-(K+1)] + tao[-1])/2, ymin = lower, ymax = upper), alpha = .5, fill = "gray70") + 
+      ggplot2::xlab("Time") + ggplot2::ylab("Hazard rate") + ggplot2::scale_alpha_continuous(guide = F) + 
+      ggplot2::ggtitle(paste0("Estimate of hazard rates with intervals at ",confidence * 100,"%  of credibility")) +
+      ggthemes::theme_tufte() +
+      ggplot2::theme(axis.line = ggplot2::element_line(colour = "black"),
+            legend.position="bottom")
+    
+    S <- s$SUM.S %>% ggplot2::ggplot() + ggplot2::geom_line(ggplot2::aes(x = t, y = `S^(t)`,color = "Model estimate")) + 
+      ggplot2::scale_color_manual(limits = c("Model estimate"),values = c("black")) +
+      ggplot2::guides(color = ggplot2::guide_legend(title = "")) +
+      ggplot2::geom_ribbon(ggplot2::aes(x = t, ymin = lower, ymax = upper), fill = "gray50", alpha = 0.3) +
+      ggplot2::scale_y_continuous(limits = c(0,1)) + 
+      ggplot2::ggtitle(paste0("Estimate of Survival Function with intervals at ", confidence * 100,"%  of credibility")) +
+      ggplot2::labs(x = "t",
+           y = expression(S^{(t)})) +
+      ggthemes::theme_tufte() +
+      ggplot2::theme(axis.line = ggplot2::element_line(colour = "black"),
+            legend.position = "bottom")
+    
+    
+    if(addSurvival){
+      fit <- survival::survfit(survival::Surv(time = times, event = delta) ~ 1,
+                     conf.int = confidence)
+      
+      km.data <- tibble::tibble(time = fit$time,surv = fit$surv, lower = fit$lower,
+                        upper = fit$upper)
+      if(km.data$time[1]!= 0){
+        km.data <- dplyr::bind_rows(tibble::tibble(time = 0, surv = 1, lower = NA, upper = NA),km.data)
       }
+      na.data <- tibble::tibble(time = fit$time, h.est = fit$n.event / fit$n.risk)
+      h <- h + ggplot2::geom_point(data = na.data, ggplot2::aes(x = time, y = h.est), color = "#b22222") + 
+        ggplot2::scale_color_manual(limits = c("Hazard Function","Nelson-Aalen based estimate"),
+                           values = c("black","#b22222")) 
+      
+      S <- S + ggplot2::geom_step(data = km.data,na.rm = T, ggplot2::aes(x = time,y = surv), color = "#b22222") + 
+        ggplot2::geom_step(data = km.data, na.rm = T, ggplot2::aes(x = time, y = lower), alpha = 0.5, color = "#b22222", linetype = "dashed") + 
+        ggplot2::geom_step(data = km.data, na.rm = T, ggplot2::aes(x = time, y = upper), alpha = 0.5, color = "#b22222", linetype = "dashed") +
+        ggplot2::scale_color_manual(limits = c("Model estimate","Kaplan Meier"),
+                           values = c("black","#b22222")) 
     }
-    if (h.NA == FALSE && confint == FALSE) {
-      d <- 3
-    }
-    if (h.NA == TRUE || KM == TRUE) {
-      plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d], h.est)), "n", 
-           xlab = "time", ylab = "Hazard rate", 
-           main = "Estimate of hazard rates")
-    }
-    else {
-      plot(c(0, max(tao)), c(0, max(SUM.h[, 5 - d])), "n", 
-           xlab = "time", ylab = "Hazard rate", 
-           main = "Estimate of hazard rates")
-    }
-    if (h.NA == TRUE) {
-      points(x = fit$time, y = h.est, pch = "+", col = "slateblue4")
-    }
-    for(i in 1:K) {
-      segments(x0 = tao[i], y0 = SUM.h[i, 2], x1 = tao[i + 1], 
-               y1 = SUM.h[i, 2], lty = 1, lwd = 2.5)
-      if (confint  == TRUE) {
-        segments(x0 = tao[i], y0 = SUM.h[i, 3], x1 = tao[i + 1],
-                 y1 = SUM.h[i, 3], lty = 2, col = 1)
-        segments(x0 = tao[i], y0 = SUM.h[i, 5], x1 = tao[i + 1],
-                 y1 = SUM.h[i, 5], lty = 2, col = 1)
-      }
-    }
-    if (legend == TRUE) {
-      if (confint == FALSE && h.NA == FALSE) {
-        legend("topleft", c("Hazard function"), lty = 1, lwd = 2, col = 1, 
-               bty = "n", cex = 0.8)
-      }
-      if (confint == TRUE && h.NA == FALSE) {
-        legend("topleft", c("Hazard function", paste("Confidence band (", 
-                                                     confidence * 100, "%)",
-                                                     sep="")), lty = c(1, 2), 
-               lwd = c(2, 1), col = c(1, 1), bty = "n", cex = 0.8)
-      }
-      if (confint == FALSE && h.NA == TRUE) {
-        legend("topleft", c("Hazard function", "Nelson-Aalen based estimate"), 
-               lty = c(1, 0), lwd = c(2, 1), col = c(1, "slateblue4"), 
-               bty = "n", cex = 0.8, pch=c("","+"))
-      }
-      if (confint == TRUE && h.NA == TRUE) {
-        legend("topleft", 
-               c("Hazard function", paste("Confidence band (", confidence * 100,
-                                          "%)",sep=""),
-                 "Nelson-Aalen based estimate"), lty = c(1, 2, 0),
-               lwd = c(2, 1, 1), col = c(1, 1, "slateblue4"),
-               bty = "n", cex = 0.8, pch=c("","","+"))
-      }
-    }
-  }
-  if (fun == "S" || fun == "both") {
-    if (fun == "both") {
-      a = TRUE
-    } else {
-      a = FALSE
-    }
-    par(mfrow = c(1, 1), ask = a)
-    if (KM == FALSE) {plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", 
-                           ylab = "", main = "Estimate of Survival Function")
-                      lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
-                      if (confint == TRUE) {
-                        lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "l", 
-                              lty = 2, lwd = 2, col = 1)
-                        lines(x = SUM.S[, 1], y = SUM.S[, 5], type = "l",
-                              lty = 2, lwd = 2, col = 1)
-                      }
-    }
-    if (KM == TRUE) {
-      if (confint == TRUE) {
-        plot(fit, xlab = "times", ylab = "", 
-             main = "Estimate of Survival Function", col = "slateblue4")
-        lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
-        lines(x = SUM.S[, 1], y = SUM.S[, 3], type = "l", lty = 2, lwd = 2, 
-              col = 1)
-        lines(x = SUM.S[, 1], y = SUM.S[, 5], type = "l", lty = 2, lwd = 2, 
-              col = 1)
-      }
-      if (confint == FALSE) {
-        plot(c(0, max(M$times)), c(0, 1), "n", xlab = "times", ylab = "", 
-             main = "Estimate of Survival Function")
-        lines(x = SUM.S[, 1], y = SUM.S[, 2], type = "l", lwd = 2)
-        lines(fit, conf.int = FALSE, type = "s", xlab = "times", ylab = "", lty = 2, 
-              lwd = 1, col = "slateblue4")
-      }
-    }
-    par(mfrow = c(1, 1), ask = FALSE)
-    if (legend == TRUE) {
-      if ((fun == "S" || fun == "both") && KM == TRUE && confint == FALSE) {
-        legend(x = "bottomleft", c("Model estimate", "Kaplan-Meier"), 
-               lty = c(1, 1), col = c(1, "slateblue4"), bty = "n", 
-               lwd = c(2, 1), cex = 0.8)
-      }
-      if ((fun == "S" || fun == "both") && KM == FALSE && confint == FALSE) {
-        legend(x = "bottomleft", "Model estimate", lty = 1, col = 1, bty = "n", 
-               lwd = 2, cex = 0.8)
-      }
-      if ((fun == "S" || fun == "both") && KM == TRUE && confint == TRUE) {
-        legend(x = "bottomleft", 
-               c("Model estimate", paste("Confidence bound (", 
-                                         confidence * 100,
-                                         "%)", sep = ""), "Kaplan-Meier",
-                 paste("KM Confidence bound (", confidence * 100, "%)", 
-                       sep = "")), lty = c(1, 2, 1, 2), 
-               col = c(1, 1, "slateblue4", "slateblue4"), bty = "n", 
-               lwd = c(2, 2, 1, 1), cex = 0.8)
-      }
-      if ((fun == "S" || fun == "both") && KM == FALSE && confint == TRUE) {
-        legend(x = "bottomleft", c("Model estimate", 
-                                  paste("Confidence bound (", 
-                                        confidence * 100, 
-                                        "%)", sep = "")), lty = c(1, 2), 
-               col = c(1, 1), bty = "n", lwd = c(2, 2), cex = 0.8)
-      }
+    
+    if (summary == TRUE) {
+      return(list(h,S,SUM))
+    } else{
+      return(list(h,S))
     }
   }
-  out <- list(SUM.h = SUM.h, SUM.S = SUM.S)
-  if (summary == TRUE) {
-    return(out)
-  }
-}
