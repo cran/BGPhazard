@@ -13,11 +13,12 @@
 #' @param delta Logical vector. Status indicator. \code{TRUE} (1) indicates
 #' exact lifetime is known, \code{FALSE} (0) indicates that the corresponding
 #' failure time is right censored.
-#' @param type.t Integer. 1=computes uniformly-dense intervals; 2=length
-#' intervals defined by the user and 3=same length intervals.
-#' @param length Integer. Interval length for the partition.
+#' @param type.t Integer. 1=computes uniformly-dense intervals; 2=
+#' partition arbitrarily defined by the user with parameter utao and 3=same length intervals.
 #' @param K Integer. Partition length for the hazard function if
 #' \code{type.t}=1 or \code{type.t}=3.
+#' @param utao vector. Partition specified by the user when type.t = 2. The first value of 
+#' the vector has to be 0 and the last one the maximum observed time, either censored or uncensored.
 #' @param alpha Nonnegative entry vector. Small entries are recommended in
 #' order to specify a non-informative prior distribution.
 #' @param beta Nonnegative entry vector. Small entries are recommended in order
@@ -25,7 +26,7 @@
 #' @param c.r Nonnegative vector. The higher the entries, the higher the correlation of two consecutive intervals.
 #' @param type.c 1=defines \code{c.r} as a zero-entry vector; 2=lets the user
 #' define \code{c.r} freely; 3=assigns \code{c.r} by computing an exponential
-#' prior distribution with mean 1; 4=assigns \code{c.r} by computing an exponential hierarchical
+#' prior distribution with mean epsilon; 4=assigns \code{c.r} by computing an exponential hierarchical
 #' distribution with mean \code{epsilon} which in turn has a Ga(a.eps, b.eps)
 #' distribution.
 #' @param epsilon Double. Mean of the exponential distribution assigned to
@@ -65,7 +66,7 @@
 #' 
 #' @export CuMRes
 CuMRes <-
-  function(times, delta = rep(1, length(times)), type.t = 3, length = NULL, K = 50, 
+  function(times, delta = rep(1, length(times)), type.t = 3, K = 5, utao = NULL,
            alpha = rep(0.01, K), beta = rep(0.01, K), 
            c.r = rep(1, (K - 1)),
            type.c = 4, epsilon = 1, c.nu = 1, a.eps = 0.1, b.eps = 0.1,
@@ -83,11 +84,17 @@ CuMRes <-
       stop ("Invalid argument: 'times' and 'delta' must have same length.")
     }
     if (type.t == 2) {
-      m <- ceiling(max(times))
-      if (length > m) {
-        stop (c("type.t = 2 requires length <=", m))
+      if(is.null(utao)) stop("If type.t = 2 you need to specify utao.")
+      utao <- sort(utao)
+      if(utao[1]!=0){
+        warning("The first value of the partition needs to be 0, utao fixed and now starting with 0.")
+        utao <- c(0, utao)
+      } 
+      if(max(times) > max(utao)){
+        utao <- c(utao,max(times))
+        warning("The last value of the partition needs to be", max(times),", utao fixed and set to ",max(times),".")
       }
-      K <- ceiling(ceiling(max(times))/length)
+      K <- length(utao) - 1
     }
     if (type.t == 1 || type.t == 3) {
       if (class(try(K != 0, TRUE)) == "try-error") {
@@ -112,7 +119,7 @@ CuMRes <-
     if (abs(type.c - round(type.c)) > tol || type.c < 1 || type.c > 4) {
       stop ("Invalid argument: 'type.c' must be an integer between 1 and 4.")
     }
-    if (type.c %in% c(1, 2)) {
+    if (type.c %in% c( 2)) {
       if (length(c.r) != (K - 1)) {
         stop (c("Invalid argument: 'c.r' must have length, ", K - 1))
       }
@@ -121,8 +128,8 @@ CuMRes <-
       }
     }
     if (type.c == 1 && sum(abs(c.r)) != (K-1) ) {
-      c.r <- rep(1, K - 1)
-      warning (c("'c.r' redefined as rep(1,", K - 1, ") because type.c = 1."))
+      c.r <- rep(0, K - 1)
+      warning (c("'c.r' redefined as rep(0,", K - 1, ") because type.c = 1."))
     }
     if (type.c == 3 && epsilon < 0) {
       stop ("Invalid argument: 'epsilon' must be nonnegative.")
@@ -147,7 +154,7 @@ CuMRes <-
     if (printtime != TRUE && printtime != FALSE) {
       stop ("Invalid argument: 'printtime' must be a logical value.")
     }
-    nm <- NM(times, delta, type.t, K, length)
+    nm <- NM(times, delta, type.t, K, utao)
     n <- nm$n
     m <- nm$m
     tao <- nm$tao
@@ -165,7 +172,7 @@ CuMRes <-
     Mu <- rep(NA, iterations)
     Z <- rep(NA, iterations) #iniciar vector de tiempo de quiebre
     Pi <- rep(NA, iterations) #iniciar vector de probabilidades
-    k.star <- min(which(max(times[delta==1]) < tao)) - 1 #k m?s grande donde hay al menos una observaci?n exacta
+    k.star <- min(which(max(times[delta==1]) <= tao)) - 1 #k m?s grande donde hay al menos una observaci?n exacta
     z <- k.star # inicial para tiempo de quiebre
     pb <- dplyr::progress_estimated(iterations)
     for(j in seq_len(iterations)) {

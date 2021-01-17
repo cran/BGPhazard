@@ -4,12 +4,27 @@
 \alias{CuMRes}
 \title{Bayesian Semiparametric Cure Rate Model with an Unknown Threshold}
 \usage{
-CuMRes(times, delta = rep(1, length(times)), type.t = 3,
-  length = NULL, K = 50, alpha = rep(0.01, K), beta = rep(0.01, K),
-  c.r = rep(1, (K - 1)), type.c = 4, epsilon = 1, c.nu = 1,
-  a.eps = 0.1, b.eps = 0.1, a.mu = 0.01, b.mu = 0.01,
-  iterations = 1000, burn.in = floor(iterations * 0.2), thinning = 5,
-  printtime = TRUE)
+CuMRes(
+  times,
+  delta = rep(1, length(times)),
+  type.t = 3,
+  K = 5,
+  utao = NULL,
+  alpha = rep(0.01, K),
+  beta = rep(0.01, K),
+  c.r = rep(1, (K - 1)),
+  type.c = 4,
+  epsilon = 1,
+  c.nu = 1,
+  a.eps = 0.1,
+  b.eps = 0.1,
+  a.mu = 0.01,
+  b.mu = 0.01,
+  iterations = 1000,
+  burn.in = floor(iterations * 0.2),
+  thinning = 5,
+  printtime = TRUE
+)
 }
 \arguments{
 \item{times}{Numeric positive vector. Failure times.}
@@ -18,13 +33,14 @@ CuMRes(times, delta = rep(1, length(times)), type.t = 3,
 exact lifetime is known, \code{FALSE} (0) indicates that the corresponding
 failure time is right censored.}
 
-\item{type.t}{Integer. 1=computes uniformly-dense intervals; 2=length
-intervals defined by the user and 3=same length intervals.}
-
-\item{length}{Integer. Interval length for the partition.}
+\item{type.t}{Integer. 1=computes uniformly-dense intervals; 2=
+partition arbitrarily defined by the user with parameter utao and 3=same length intervals.}
 
 \item{K}{Integer. Partition length for the hazard function if
 \code{type.t}=1 or \code{type.t}=3.}
+
+\item{utao}{vector. Partition specified by the user when type.t = 2. The first value of 
+the vector has to be 0 and the last one the maximum observed time, either censored or uncensored.}
 
 \item{alpha}{Nonnegative entry vector. Small entries are recommended in
 order to specify a non-informative prior distribution.}
@@ -36,7 +52,7 @@ to specify a non-informative prior distribution.}
 
 \item{type.c}{1=defines \code{c.r} as a zero-entry vector; 2=lets the user
 define \code{c.r} freely; 3=assigns \code{c.r} by computing an exponential
-prior distribution with mean 1; 4=assigns \code{c.r} by computing an exponential hierarchical
+prior distribution with mean epsilon; 4=assigns \code{c.r} by computing an exponential hierarchical
 distribution with mean \code{epsilon} which in turn has a Ga(a.eps, b.eps)
 distribution.}
 

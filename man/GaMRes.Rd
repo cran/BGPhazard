@@ -4,11 +4,25 @@
 \alias{GaMRes}
 \title{Markov Gamma Model}
 \usage{
-GaMRes(times, delta = rep(1, length(times)), type.t = 3,
-  length = NULL, K = 5, alpha = rep(0.01, K), beta = rep(0.01, K),
-  c.r = rep(1, (K - 1)), c.nu = 1, a.eps = 0.1, b.eps = 0.1,
-  type.c = 4, epsilon = 1, iterations = 1000,
-  burn.in = floor(iterations * 0.2), thinning = 5, printtime = TRUE)
+GaMRes(
+  times,
+  delta = rep(1, length(times)),
+  type.t = 3,
+  K = 5,
+  utao = NULL,
+  alpha = rep(0.01, K),
+  beta = rep(0.01, K),
+  c.r = rep(1, (K - 1)),
+  c.nu = 1,
+  a.eps = 0.1,
+  b.eps = 0.1,
+  type.c = 4,
+  epsilon = 1,
+  iterations = 1000,
+  burn.in = floor(iterations * 0.2),
+  thinning = 5,
+  printtime = TRUE
+)
 }
 \arguments{
 \item{times}{Numeric positive vector. Failure times.}
@@ -17,13 +31,14 @@ GaMRes(times, delta = rep(1, length(times)), type.t = 3,
 exact lifetime is known, \code{FALSE} (0) indicates that the corresponding
 failure time is right censored.}
 
-\item{type.t}{Integer. 1=computes uniformly-dense intervals; 2=length
-intervals defined by the user and 3=same length intervals.}
-
-\item{length}{Integer. Interval length for the partition.}
+\item{type.t}{Integer. 1=computes uniformly-dense intervals; 2=
+partition arbitrarily defined by the user with parameter utao and 3=same length intervals.}
 
 \item{K}{Integer. Partition length for the hazard function if
 \code{type.t}=1 or \code{type.t}=3.}
+
+\item{utao}{vector. Partition specified by the user when type.t = 2. The first value of 
+the vector has to be 0 and the last one the maximum observed time, either censored or uncensored.}
 
 \item{alpha}{Nonnegative entry vector. Small entries are recommended in
 order to specify a non-informative prior distribution.}

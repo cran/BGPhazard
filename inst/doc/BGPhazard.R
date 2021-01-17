@@ -1,8 +1,7 @@
 ### R code from vignette source 'BGPhazard.Rnw'
-### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: BGPhazard.Rnw:235-238 (eval = FALSE)
+### code chunk number 1: BGPhazard.Rnw:234-237 (eval = FALSE)
 ###################################################
 ## data(gehan)
 ## times <- gehan$time[gehan$treat == "6-MP"]
@@ -10,7 +9,7 @@
 
 
 ###################################################
-### code chunk number 2: BGPhazard.Rnw:247-250 (eval = FALSE)
+### code chunk number 2: BGPhazard.Rnw:246-249 (eval = FALSE)
 ###################################################
 ## ExG1 <- GaMRes(times, delta, type.t = 2, K = 35, type.c = 1, 
 ##                iterations = 3000)
@@ -18,7 +17,7 @@
 
 
 ###################################################
-### code chunk number 3: BGPhazard.Rnw:270-273 (eval = FALSE)
+### code chunk number 3: BGPhazard.Rnw:269-272 (eval = FALSE)
 ###################################################
 ## ExG2 <- GaMRes(times, delta, type.t = 2, K = 35, type.c = 2, 
 ##                c.r = rep(50, 34), iterations = 3000)
@@ -26,13 +25,13 @@
 
 
 ###################################################
-### code chunk number 4: BGPhazard.Rnw:291-292 (eval = FALSE)
+### code chunk number 4: BGPhazard.Rnw:290-291 (eval = FALSE)
 ###################################################
 ## GaPlotDiag(ExG2, variable = "lambda", pos = 6)
 
 
 ###################################################
-### code chunk number 5: BGPhazard.Rnw:308-311 (eval = FALSE)
+### code chunk number 5: BGPhazard.Rnw:307-310 (eval = FALSE)
 ###################################################
 ## ExG3 <- GaMRes(times, delta, type.t = 2, K = 35, type.c = 3, epsilon = 1,
 ##                iterations = 3000)
@@ -40,7 +39,7 @@
 
 
 ###################################################
-### code chunk number 6: BGPhazard.Rnw:332-335 (eval = FALSE)
+### code chunk number 6: BGPhazard.Rnw:331-334 (eval = FALSE)
 ###################################################
 ## ExG4 <- GaMRes(times, delta, type.t = 2, K = 35, type.c = 4, 
 ##                iterations = 3000)
@@ -48,7 +47,7 @@
 
 
 ###################################################
-### code chunk number 7: BGPhazard.Rnw:356-359 (eval = FALSE)
+### code chunk number 7: BGPhazard.Rnw:355-358 (eval = FALSE)
 ###################################################
 ## ExG5 <- GaMRes(times, delta, type.t = 1, K = 8, type.c = 2, 
 ##                c.r = rep(50, 7), iterations = 3000)
@@ -56,7 +55,7 @@
 
 
 ###################################################
-### code chunk number 8: BGPhazard.Rnw:380-383 (eval = FALSE)
+### code chunk number 8: BGPhazard.Rnw:379-382 (eval = FALSE)
 ###################################################
 ## ExG6 <- GaMRes(times, delta, type.t = 1, K = 8, type.c = 3,
 ##                iterations=3000)
@@ -64,7 +63,7 @@
 
 
 ###################################################
-### code chunk number 9: BGPhazard.Rnw:404-407 (eval = FALSE)
+### code chunk number 9: BGPhazard.Rnw:403-406 (eval = FALSE)
 ###################################################
 ## ExG7 <- GaMRes(times, delta, type.t = 1, K = 8, type.c = 4,
 ##                iterations = 3000)
@@ -72,7 +71,7 @@
 
 
 ###################################################
-### code chunk number 10: BGPhazard.Rnw:429-432 (eval = FALSE)
+### code chunk number 10: BGPhazard.Rnw:428-431 (eval = FALSE)
 ###################################################
 ## data(psych)
 ## times <- psych$time
@@ -80,14 +79,14 @@
 
 
 ###################################################
-### code chunk number 11: BGPhazard.Rnw:439-441 (eval = FALSE)
+### code chunk number 11: BGPhazard.Rnw:438-440 (eval = FALSE)
 ###################################################
 ## ExB1 <- BeMRes(times, delta, type.c = 1, iterations = 3000)
 ## BePloth(ExB1, confint = FALSE)
 
 
 ###################################################
-### code chunk number 12: BGPhazard.Rnw:462-465 (eval = FALSE)
+### code chunk number 12: BGPhazard.Rnw:461-464 (eval = FALSE)
 ###################################################
 ## ExB2 <- BeMRes(times, delta, type.c = 2, c.r = rep(100, 39), 
 ##                iterations = 3000)
@@ -95,27 +94,27 @@
 
 
 ###################################################
-### code chunk number 13: BGPhazard.Rnw:484-485 (eval = FALSE)
+### code chunk number 13: BGPhazard.Rnw:483-484 (eval = FALSE)
 ###################################################
 ## BePlotDiag(ExB2, variable = "Pi", pos = 6)
 
 
 ###################################################
-### code chunk number 14: BGPhazard.Rnw:499-501 (eval = FALSE)
+### code chunk number 14: BGPhazard.Rnw:498-500 (eval = FALSE)
 ###################################################
 ## ExB3 <- BeMRes(times, delta, type.c = 3, epsilon = 1, iterations = 3000)
 ## BePloth(ExB3)
 
 
 ###################################################
-### code chunk number 15: BGPhazard.Rnw:522-524 (eval = FALSE)
+### code chunk number 15: BGPhazard.Rnw:521-523 (eval = FALSE)
 ###################################################
 ## ExB4 <- BeMRes(times, delta, type.c = 4, iterations = 3000)
 ## BePloth(ExB4)
 
 
 ###################################################
-### code chunk number 16: BGPhazard.Rnw:579-601 (eval = FALSE)
+### code chunk number 16: BGPhazard.Rnw:578-600 (eval = FALSE)
 ###################################################
 ## SampWeibull <- function(n, a = 10, b = 1, beta = c(1, 1)) {
 ##   M <- matrix(0, ncol = 7, nrow = n)
