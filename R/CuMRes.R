@@ -97,7 +97,7 @@ CuMRes <-
       K <- length(utao) - 1
     }
     if (type.t == 1 || type.t == 3) {
-      if (class(try(K != 0, TRUE)) == "try-error") {
+      if (inherits(try(K != 0, TRUE), "try-error")) {
         K.aux <- 5
         warning ("'K' value not specified. 'K' fixed at ", K.aux, ".")
       } else {K.aux <- K}
@@ -143,7 +143,7 @@ CuMRes <-
       stop ("Invalid argument: 'burn.in' must be a postitive integer smaller than 
             iterations = ", iterations * 0.9, ".")
     }
-    if (class(thinning) != "numeric") {
+    if (!inherits(thinning, "numeric")) {
       stop ("Invalid argument: 'thinning' must be a logical value.")
     }
     if (thinning <= 0 || abs(thinning - round(thinning)) > tol 

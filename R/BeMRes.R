@@ -115,7 +115,7 @@ BeMRes <-
       stop ("Invalid argument: 'burn.in' must be a postitive integer smaller than 
             iterations = ", iterations * 0.9, ".")
     }
-    if (class(thinning) != "numeric") {
+    if (!inherits(thinning, "numeric")) {
       stop ("Invalid argument: 'thinning' must be a logical value.")
     }
     if (thinning <= 0 || abs(thinning - round(thinning)) > tol 
